@@ -16,9 +16,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  "https://carbon-tracker-olive.vercel.app",
   "http://localhost:3000",
   "http://localhost:3001"
-].filter(Boolean);
+].map(url => url ? url.trim().replace(/\/$/, "") : "").filter(Boolean);
 
 app.use(cors({
   origin: allowedOrigins,
