@@ -17,25 +17,25 @@ const Navbar = () => {
     const isActive = location.pathname === path;
     return `block md:inline text-xs font-bold px-3.5 py-2 rounded-full transition-all duration-200 ${
       isActive
-        ? "bg-[#0F2D1E] text-emerald-100 shadow-md shadow-emerald-950/10"
-        : "text-[#2D4A36] hover:text-[#0F2D1E] hover:bg-emerald-950/5"
+        ? "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.25)]"
+        : "text-slate-300 hover:text-emerald-400 hover:bg-white/5"
     }`;
   };
 
   return (
-    <nav className="bg-white/75 border-b border-emerald-950/10 backdrop-blur-xl sticky top-0 z-50 shadow-sm">
+    <nav className="bg-[#0B111E]/80 border-b border-emerald-500/20 backdrop-blur-2xl sticky top-0 z-50 shadow-xl shadow-black/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-2xl bg-[#0F2D1E] flex items-center justify-center text-emerald-300 text-lg font-bold shadow-md shadow-emerald-950/20 group-hover:scale-105 transition-transform">
-              🌿
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 text-lg font-black shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:scale-105 transition-transform">
+              🌍
             </div>
             <div className="flex flex-col">
-              <span className="font-serif text-xl font-bold tracking-tight text-[#0F2D1E]">
+              <span className="font-extrabold text-xl tracking-tight text-white group-hover:text-emerald-300 transition-colors">
                 CarbonTrack
               </span>
-              <span className="text-[9px] font-bold uppercase tracking-widest text-[#C96A2B] -mt-1">
-                Eco Intelligence
+              <span className="text-[9px] font-extrabold uppercase tracking-widest text-emerald-400 -mt-1">
+                Bio-Tech Platform
               </span>
             </div>
           </Link>
@@ -61,7 +61,7 @@ const Navbar = () => {
             )}
             <button
               onClick={handleLogout}
-              className="ml-3 bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-600 hover:text-white px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 shadow-sm"
+              className="ml-3 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 shadow-sm"
             >
               Logout
             </button>
@@ -69,7 +69,7 @@ const Navbar = () => {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden text-[#0F2D1E] text-xl p-2 rounded-2xl border border-emerald-950/10 bg-white/80"
+            className="md:hidden text-slate-200 text-xl p-2 rounded-2xl border border-emerald-500/20 bg-slate-900/80"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? "✕" : "☰"}
@@ -78,7 +78,7 @@ const Navbar = () => {
 
         {/* Mobile dropdown */}
         {menuOpen && (
-          <div className="md:hidden pb-4 pt-2 space-y-1.5 border-t border-emerald-950/10">
+          <div className="md:hidden pb-4 pt-2 space-y-1.5 border-t border-emerald-500/20">
             <Link to="/dashboard" className={getLinkClass("/dashboard")} onClick={() => setMenuOpen(false)}>Dashboard</Link>
             <Link to="/challenges" className={getLinkClass("/challenges")} onClick={() => setMenuOpen(false)}>Challenges</Link>
             <Link to="/leaderboard" className={getLinkClass("/leaderboard")} onClick={() => setMenuOpen(false)}>Leaderboard</Link>
@@ -98,7 +98,7 @@ const Navbar = () => {
             )}
             <button
               onClick={handleLogout}
-              className="w-full text-left bg-rose-50 border border-rose-200 text-rose-700 px-4 py-2 rounded-full text-xs font-bold mt-2"
+              className="w-full text-left bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-2 rounded-full text-xs font-bold mt-2"
             >
               Logout
             </button>

@@ -54,19 +54,19 @@ const Challenges = () => {
   const activeJoinedChallenges = challenges.filter((c) => c.isJoined);
 
   return (
-    <div className="min-h-screen text-[#1A3022] font-sans selection:bg-[#0F2D1E] selection:text-white">
+    <div className="min-h-screen text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Minimalist Hero */}
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-[#0F2D1E] via-[#163E2B] to-[#204E36] p-8 sm:p-12 text-white shadow-xl shadow-emerald-950/15">
+        {/* Luxury Hero Banner */}
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-[#0D1829] via-[#0E1F36] to-[#0A1628] p-8 sm:p-12 border border-emerald-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
           <div className="relative z-10">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 bg-emerald-400/15 border border-emerald-400/30 px-3.5 py-1.5 rounded-full">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 bg-emerald-500/15 border border-emerald-400/30 px-3.5 py-1.5 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.2)]">
               Eco Quests & Action Drives
             </span>
-            <h1 className="font-serif text-3xl sm:text-5xl font-extrabold tracking-tight mt-3">
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight mt-3 text-white">
               Sustainability Challenges 🎯
             </h1>
-            <p className="mt-2 text-emerald-100/80 text-sm sm:text-base max-w-xl leading-relaxed">
+            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
               Join local campus drives, Varanasi Ghats cleanups, and individual eco challenges to earn points and cut your footprint.
             </p>
           </div>
@@ -74,25 +74,25 @@ const Challenges = () => {
 
         {/* My Active Joined Challenges Progress Section */}
         {activeJoinedChallenges.length > 0 && (
-          <div className="eco-card p-6 sm:p-8 space-y-4 border-l-4 border-l-[#0F2D1E]">
+          <div className="obsidian-card p-6 sm:p-8 space-y-4 border-l-4 border-l-emerald-400">
             <div className="flex items-center gap-2">
               <span className="text-lg">🚀</span>
-              <h2 className="font-serif text-lg font-extrabold text-[#0F2D1E] tracking-tight">My Active Quests ({activeJoinedChallenges.length})</h2>
+              <h2 className="text-lg font-black text-white tracking-tight">My Active Quests ({activeJoinedChallenges.length})</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {activeJoinedChallenges.map((c) => (
-                <div key={c._id} className="rounded-2xl bg-[#EAF2E9] border border-emerald-900/15 p-4 space-y-2">
+                <div key={c._id} className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
                   <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-[#0F2D1E] text-sm">{c.title}</h4>
-                    <span className="text-[10px] font-bold uppercase tracking-wider bg-[#0F2D1E] text-emerald-300 px-2.5 py-0.5 rounded-full">
+                    <h4 className="font-bold text-white text-sm">{c.title}</h4>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2.5 py-0.5 rounded-full">
                       Active
                     </span>
                   </div>
-                  <p className="text-xs text-[#557560] line-clamp-2">{c.description}</p>
+                  <p className="text-xs text-slate-400 line-clamp-2">{c.description}</p>
                   <div className="pt-2 flex justify-between items-center text-xs">
-                    <span className="text-[#0F2D1E] font-extrabold">+{c.points} pts</span>
-                    <span className="text-[#557560]">{c.durationDays} days challenge</span>
+                    <span className="text-emerald-400 font-bold">+{c.points} pts</span>
+                    <span className="text-slate-500">{c.durationDays} days challenge</span>
                   </div>
                 </div>
               ))}
@@ -106,8 +106,8 @@ const Challenges = () => {
             onClick={() => setSelectedCategory("all")}
             className={`px-4 py-2 rounded-full text-xs font-bold transition ${
               selectedCategory === "all"
-                ? "bg-[#0F2D1E] text-emerald-100 shadow-md"
-                : "bg-white border border-emerald-950/15 text-[#2D4A36] hover:bg-emerald-950/5"
+                ? "bg-emerald-500 text-slate-950 shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+                : "bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800"
             }`}
           >
             All Challenges ({challenges.length})
@@ -118,8 +118,8 @@ const Challenges = () => {
               onClick={() => setSelectedCategory(catKey)}
               className={`px-4 py-2 rounded-full text-xs font-bold transition ${
                 selectedCategory === catKey
-                  ? "bg-[#0F2D1E] text-emerald-100 shadow-md"
-                  : "bg-white border border-emerald-950/15 text-[#2D4A36] hover:bg-emerald-950/5"
+                  ? "bg-emerald-500 text-slate-950 shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+                  : "bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800"
               }`}
             >
               {catLabel}
@@ -128,11 +128,11 @@ const Challenges = () => {
         </div>
 
         {loading ? (
-          <div className="eco-card p-8 text-center text-[#557560]">
+          <div className="obsidian-card p-8 text-center text-slate-400">
             Loading challenges...
           </div>
         ) : filteredChallenges.length === 0 ? (
-          <div className="eco-card p-8 text-center text-[#557560]">
+          <div className="obsidian-card p-8 text-center text-slate-400">
             No challenges available in this category right now.
           </div>
         ) : (
@@ -140,29 +140,29 @@ const Challenges = () => {
             {filteredChallenges.map((c) => (
               <div
                 key={c._id}
-                className="eco-card p-6 flex flex-col justify-between space-y-4"
+                className="obsidian-card p-6 flex flex-col justify-between space-y-4"
               >
                 <div>
                   <div className="flex justify-between items-start mb-3">
-                    <span className="text-[10px] font-bold uppercase tracking-wider bg-[#EAF2E9] border border-emerald-900/15 text-[#0F2D1E] px-2.5 py-1 rounded-full">
+                    <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2.5 py-1 rounded-full">
                       {categoryLabels[c.category] || c.category}
                     </span>
-                    <span className="text-xs font-black text-[#C96A2B] bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-black text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
                       +{c.points} pts
                     </span>
                   </div>
 
-                  <h3 className="font-serif font-bold text-[#0F2D1E] text-lg mb-2">{c.title}</h3>
-                  <p className="text-xs text-[#557560] leading-relaxed mb-4">{c.description}</p>
+                  <h3 className="font-bold text-white text-lg mb-2">{c.title}</h3>
+                  <p className="text-xs text-slate-400 leading-relaxed mb-4">{c.description}</p>
                 </div>
 
-                <div className="pt-4 border-t border-emerald-950/10 flex items-center justify-between">
-                  <span className="text-xs text-[#557560] font-medium">⏱️ {c.durationDays} Days</span>
+                <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                  <span className="text-xs text-slate-500 font-medium">⏱️ {c.durationDays} Days</span>
 
                   {c.isJoined ? (
                     <button
                       disabled
-                      className="px-4 py-2 rounded-full bg-[#EAF2E9] border border-emerald-900/15 text-[#0F2D1E] font-bold text-xs cursor-default"
+                      className="px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold text-xs cursor-default"
                     >
                       ✓ Already Joined
                     </button>
@@ -170,7 +170,7 @@ const Challenges = () => {
                     <button
                       onClick={() => handleJoin(c._id)}
                       disabled={joiningId === c._id}
-                      className="px-5 py-2 rounded-full bg-[#0F2D1E] text-white font-bold text-xs hover:bg-[#163E2B] transition shadow-md disabled:opacity-50"
+                      className="px-5 py-2 rounded-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs hover:scale-[1.02] transition shadow-lg shadow-emerald-500/20 disabled:opacity-50"
                     >
                       {joiningId === c._id ? "Joining..." : "Accept Challenge"}
                     </button>
