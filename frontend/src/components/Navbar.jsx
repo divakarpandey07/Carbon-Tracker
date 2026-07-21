@@ -12,14 +12,18 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  const linkClass = "block md:inline text-gray-600 hover:text-green-700 text-sm font-medium px-3 py-2 rounded hover:bg-green-50";
+  const linkClass =
+    "block md:inline text-slate-300 hover:text-emerald-400 text-xs font-semibold px-3 py-2 rounded-xl hover:bg-slate-900 transition-all";
 
   return (
-    <nav className="bg-white shadow sticky top-0 z-10">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-between h-14">
-          <Link to="/dashboard" className="font-bold text-green-700 text-lg">
-            🌍 CarbonTrack
+    <nav className="bg-slate-950/90 border-b border-slate-800/80 backdrop-blur-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/dashboard" className="flex items-center gap-2 font-black text-white text-lg tracking-tight">
+            <span className="text-xl">🌍</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-300">
+              CarbonTrack
+            </span>
           </Link>
 
           {/* Desktop links */}
@@ -43,7 +47,7 @@ const Navbar = () => {
             )}
             <button
               onClick={handleLogout}
-              className="ml-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm"
+              className="ml-3 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white px-4 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200"
             >
               Logout
             </button>
@@ -51,7 +55,7 @@ const Navbar = () => {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden text-gray-600"
+            className="md:hidden text-slate-300 text-xl"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? "✕" : "☰"}
@@ -60,7 +64,7 @@ const Navbar = () => {
 
         {/* Mobile dropdown */}
         {menuOpen && (
-          <div className="md:hidden pb-3 space-y-1">
+          <div className="md:hidden pb-4 pt-2 space-y-1 border-t border-slate-800">
             <Link to="/dashboard" className={linkClass} onClick={() => setMenuOpen(false)}>Dashboard</Link>
             <Link to="/challenges" className={linkClass} onClick={() => setMenuOpen(false)}>Challenges</Link>
             <Link to="/leaderboard" className={linkClass} onClick={() => setMenuOpen(false)}>Leaderboard</Link>
@@ -80,7 +84,7 @@ const Navbar = () => {
             )}
             <button
               onClick={handleLogout}
-              className="w-full text-left bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 text-sm mt-2"
+              className="w-full text-left bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-2 rounded-xl text-xs font-semibold mt-2"
             >
               Logout
             </button>

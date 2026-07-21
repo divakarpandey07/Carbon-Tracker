@@ -71,7 +71,7 @@ const ActivityForm = ({ onActivityAdded }) => {
     setError("");
 
     if (!form.quantity || Number(form.quantity) <= 0) {
-      setError("Please enter a valid quantity");
+      setError("Please enter a valid positive quantity");
       return;
     }
 
@@ -90,149 +90,168 @@ const ActivityForm = ({ onActivityAdded }) => {
   const isCarTransport = form.category === "transport" && form.subType === "car";
 
   return (
-    <div className="bg-white/95 border border-sage/10 rounded-[1.75rem] shadow-lg p-6">
-      <h2 className="text-lg font-semibold mb-4 text-pine">Log New Activity</h2>
+    <div className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl p-6 sm:p-8">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-xl">
+          ✏️
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-white tracking-tight">Log Activity</h2>
+          <p className="text-xs text-slate-400">Calculate carbon footprint instantly</p>
+        </div>
+      </div>
 
       {error && (
-        <div className="bg-red-100 text-red-700 p-3 rounded-2xl mb-4 text-sm">{error}</div>
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3.5 rounded-2xl mb-4 text-xs font-medium">
+          {error}
+        </div>
       )}
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div>
-          <label className="block text-sm font-medium text-sage mb-1">Category</label>
-          <select
-            name="category"
-            value={form.category}
-            onChange={handleCategoryChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
-          >
-            {CATEGORIES.map((c) => (
-              <option key={c.value} value={c.value}>{c.label}</option>
-            ))}
-          </select>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Category</label>
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleCategoryChange}
+              className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Sub-Type</label>
+            <select
+              name="subType"
+              value={form.subType}
+              onChange={handleSubTypeChange}
+              className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            >
+              {SUBTYPES[form.category].map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-sage mb-1">Sub-type</label>
-          <select
-            name="subType"
-            value={form.subType}
-            onChange={handleSubTypeChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
-          >
-            {SUBTYPES[form.category].map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Dynamic Car Smart Factors */}
+        {/* Dynamic Smart Car Metadata Card */}
         {isCarTransport && (
-          <div className="md:col-span-2 bg-emerald-50/60 border border-emerald-100 p-4 rounded-2xl grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-emerald-800 mb-1">Fuel Type</label>
-              <select
-                name="fuelType"
-                value={form.metadata?.fuelType || "petrol"}
-                onChange={handleMetadataChange}
-                className="w-full rounded-2xl border border-emerald-200 bg-white px-3 py-2 text-xs text-pine outline-none focus:ring-2 focus:ring-emerald-400"
-              >
-                {CAR_FUEL_TYPES.map((f) => (
-                  <option key={f.value} value={f.value}>{f.label}</option>
-                ))}
-              </select>
+          <div className="rounded-2xl bg-gradient-to-r from-emerald-950/60 to-teal-950/60 border border-emerald-500/30 p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm">🚗</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">Vehicle Specs Engine</span>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-emerald-800 mb-1">Vehicle Size</label>
-              <select
-                name="carSize"
-                value={form.metadata?.carSize || "medium"}
-                onChange={handleMetadataChange}
-                className="w-full rounded-2xl border border-emerald-200 bg-white px-3 py-2 text-xs text-pine outline-none focus:ring-2 focus:ring-emerald-400"
-              >
-                {CAR_SIZES.map((s) => (
-                  <option key={s.value} value={s.value}>{s.label}</option>
-                ))}
-              </select>
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div>
+                <label className="block text-[11px] font-medium text-emerald-200/80 mb-1">Fuel Type</label>
+                <select
+                  name="fuelType"
+                  value={form.metadata?.fuelType || "petrol"}
+                  onChange={handleMetadataChange}
+                  className="w-full rounded-xl border border-emerald-500/30 bg-slate-950 px-2.5 py-2 text-xs text-slate-100 outline-none focus:border-emerald-400"
+                >
+                  {CAR_FUEL_TYPES.map((f) => (
+                    <option key={f.value} value={f.value}>{f.label}</option>
+                  ))}
+                </select>
+              </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-emerald-800 mb-1">Vehicle Age</label>
-              <select
-                name="carAge"
-                value={form.metadata?.carAge || "mid"}
-                onChange={handleMetadataChange}
-                className="w-full rounded-2xl border border-emerald-200 bg-white px-3 py-2 text-xs text-pine outline-none focus:ring-2 focus:ring-emerald-400"
-              >
-                {CAR_AGES.map((a) => (
-                  <option key={a.value} value={a.value}>{a.label}</option>
-                ))}
-              </select>
+              <div>
+                <label className="block text-[11px] font-medium text-emerald-200/80 mb-1">Vehicle Size</label>
+                <select
+                  name="carSize"
+                  value={form.metadata?.carSize || "medium"}
+                  onChange={handleMetadataChange}
+                  className="w-full rounded-xl border border-emerald-500/30 bg-slate-950 px-2.5 py-2 text-xs text-slate-100 outline-none focus:border-emerald-400"
+                >
+                  {CAR_SIZES.map((s) => (
+                    <option key={s.value} value={s.value}>{s.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-medium text-emerald-200/80 mb-1">Vehicle Age</label>
+                <select
+                  name="carAge"
+                  value={form.metadata?.carAge || "mid"}
+                  onChange={handleMetadataChange}
+                  className="w-full rounded-xl border border-emerald-500/30 bg-slate-950 px-2.5 py-2 text-xs text-slate-100 outline-none focus:border-emerald-400"
+                >
+                  {CAR_AGES.map((a) => (
+                    <option key={a.value} value={a.value}>{a.label}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
         )}
 
-        <div>
-          <label className="block text-sm font-medium text-sage mb-1">Quantity</label>
-          <input
-            type="number"
-            name="quantity"
-            step="0.01"
-            min="0"
-            value={form.quantity}
-            onChange={handleChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
-            placeholder="e.g. 15"
-          />
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Quantity</label>
+            <input
+              type="number"
+              name="quantity"
+              step="0.01"
+              min="0"
+              value={form.quantity}
+              onChange={handleChange}
+              className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              placeholder="e.g. 15"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Unit</label>
+            <select
+              name="unit"
+              value={form.unit}
+              onChange={handleChange}
+              className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            >
+              {UNITS.map((u) => (
+                <option key={u} value={u}>{u}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-sage mb-1">Unit</label>
-          <select
-            name="unit"
-            value={form.unit}
-            onChange={handleChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
-          >
-            {UNITS.map((u) => (
-              <option key={u} value={u}>{u}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-sage mb-1">Date</label>
+          <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Date</label>
           <input
             type="date"
             name="date"
             value={form.date}
             onChange={handleChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
+            className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
           />
         </div>
 
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-sage mb-1">Notes (optional)</label>
+        <div>
+          <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Notes (optional)</label>
           <input
             type="text"
             name="notes"
             value={form.notes}
             onChange={handleChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
-            placeholder="Optional notes"
+            className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            placeholder="e.g. Highway drive to work"
           />
         </div>
 
-        <div className="md:col-span-2">
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-3xl bg-moss px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-mosslight disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loading ? "Saving..." : "Add Activity"}
-          </button>
-        </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full mt-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-400 transition-all duration-200 disabled:opacity-50"
+        >
+          {loading ? "Calculating & Saving..." : "Add Activity Log"}
+        </button>
       </form>
     </div>
   );

@@ -1,6 +1,26 @@
 import { useState } from "react";
 import api from "../utils/api";
 
+const categoryBadges = {
+  transport: "bg-blue-500/15 border-blue-500/30 text-blue-400",
+  food: "bg-amber-500/15 border-amber-500/30 text-amber-400",
+  electricity: "bg-yellow-500/15 border-yellow-500/30 text-yellow-400",
+  water: "bg-cyan-500/15 border-cyan-500/30 text-cyan-400",
+  gas: "bg-purple-500/15 border-purple-500/30 text-purple-400",
+  waste: "bg-emerald-500/15 border-emerald-500/30 text-emerald-400",
+  other: "bg-slate-500/15 border-slate-500/30 text-slate-400",
+};
+
+const categoryIcons = {
+  transport: "🚗",
+  food: "🍽️",
+  electricity: "⚡",
+  water: "💧",
+  gas: "🔥",
+  waste: "🗑️",
+  other: "📦",
+};
+
 const ActivityList = ({ activities, onActivityDeleted }) => {
   const [deletingId, setDeletingId] = useState(null);
 
@@ -11,7 +31,7 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
       await api.delete(`/activities/${id}`);
       onActivityDeleted(id);
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to delete");
+      alert(err.response?.data?.message || "Failed to delete activity");
     } finally {
       setDeletingId(null);
     }
@@ -19,55 +39,97 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
 
   if (activities.length === 0) {
     return (
-      <div className="rounded-[1.75rem] bg-white/95 border border-sage/10 shadow-lg p-8 text-center text-pine">
-        No activities logged yet. Add your first one above to start seeing your impact.
+      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-8 text-center text-slate-400 flex flex-col items-center justify-center min-h-[300px]">
+        <span className="text-4xl mb-3">📝</span>
+        <p className="font-semibold text-slate-200">No activity logs recorded yet</p>
+        <p className="text-xs text-slate-500 mt-1">Add your daily travel or energy usage to start calculating.</p>
       </div>
     );
   }
 
-  const categoryColors = {
-    transport: "bg-blue-100 text-blue-700",
-    food: "bg-orange-100 text-orange-700",
-    electricity: "bg-yellow-100 text-yellow-700",
-    water: "bg-cyan-100 text-cyan-700",
-    gas: "bg-purple-100 text-purple-700",
-    waste: "bg-gray-100 text-gray-700",
-    other: "bg-pink-100 text-pink-700",
-  };
-
   return (
-    <div className="rounded-[1.75rem] bg-white/95 border border-sage/10 shadow-lg overflow-hidden">
-      <div className="flex items-center justify-between p-6">
-        <h2 className="text-lg font-semibold text-pine">Recent Activities</h2>
-        <p className="text-sm text-sage">{activities.length} entries</p>
+    <div className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl overflow-hidden">
+      <div className="flex items-center justify-between p-6 border-b border-slate-800">
+        <div>
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">History</span>
+          <h2 className="text-xl font-bold text-white tracking-tight">Recent Activity Logs</h2>
+        </div>
+        <span className="text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-full">
+          {activities.length} Logs
+        </span>
       </div>
-      <div className="divide-y divide-sage/10">
-        {activities.map((a) => (
-          <div key={a._id} className="flex flex-col gap-4 p-6 hover:bg-mist/70 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-              <span className={`text-xs font-semibold px-3 py-1 rounded-full ${categoryColors[a.category]}`}>
-                {a.category}
-              </span>
-              <div>
-                <p className="font-semibold text-pine">
-                  {a.subType} — {a.quantity} {a.unit}
-                </p>
-                <p className="text-sm text-sage">
-                  {new Date(a.date).toLocaleDateString()}
-                  {a.notes && ` • ${a.notes}`}
-                  {a.co2Emitted !== null && ` • ${a.co2Emitted} kg CO2e`}
-                </p>
+
+      <div className="divide-y divide-slate-800/80">
+        {activities.map((a) => {
+          const badgeStyle = categoryBadges[a.category] || categoryBadges.other;
+          const icon = categoryIcons[a.category] || "📦";
+
+          return (
+            <div
+              key={a._id}
+              className="p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 hover:bg-slate-800/40 transition-colors"
+            >
+              <div className="flex items-start sm:items-center gap-3.5">
+                <div className="w-10 h-10 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-lg shrink-0">
+                  {icon}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-bold text-white text-sm capitalize">{a.subType}</span>
+                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${badgeStyle}`}>
+                      {a.category}
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-slate-400">
+                    <span className="font-semibold text-slate-300">{a.quantity} {a.unit}</span>
+                    {" • "}
+                    {new Date(a.date).toLocaleDateString()}
+                    {a.notes && <span className="italic"> • "{a.notes}"</span>}
+                  </p>
+
+                  {/* Metadata display if available */}
+                  {a.metadata && Object.keys(a.metadata).length > 0 && (
+                    <div className="mt-1 flex flex-wrap gap-1.5">
+                      {a.metadata.fuelType && (
+                        <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">
+                          Fuel: {a.metadata.fuelType}
+                        </span>
+                      )}
+                      {a.metadata.carSize && (
+                        <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">
+                          Size: {a.metadata.carSize}
+                        </span>
+                      )}
+                      {a.metadata.carAge && (
+                        <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">
+                          Age: {a.metadata.carAge}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 border-t sm:border-t-0 border-slate-800/60 pt-3 sm:pt-0">
+                {a.co2Emitted !== null && (
+                  <div className="text-right">
+                    <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">CO2 Impact</p>
+                    <p className="text-sm font-extrabold text-emerald-400">+{a.co2Emitted} kg</p>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => handleDelete(a._id)}
+                  disabled={deletingId === a._id}
+                  className="px-3.5 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-semibold text-red-400 hover:bg-red-500/20 hover:border-red-500/40 transition disabled:opacity-50"
+                >
+                  {deletingId === a._id ? "..." : "Delete"}
+                </button>
               </div>
             </div>
-            <button
-              onClick={() => handleDelete(a._id)}
-              disabled={deletingId === a._id}
-              className="self-start rounded-full bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed sm:self-center"
-            >
-              {deletingId === a._id ? "Deleting..." : "Delete"}
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
