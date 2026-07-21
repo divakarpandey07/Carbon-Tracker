@@ -25,9 +25,27 @@ const EcoBotWidget = () => {
   const [userStats, setUserStats] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [bubbleIndex, setBubbleIndex] = useState(0);
 
   const isAdmin = user?.role === "admin";
   const userName = user?.name || "Friend";
+
+  const bubbleTips = [
+    `Hii ${userName}! 👋 Want to check your carbon footprint?`,
+    `🚗 Tip: Carpooling 2 days/week saves 8.5 kg CO2!`,
+    `⚡ Tip: Switching to EV cuts 70% lifecycle emissions!`,
+    `🚩 Varanasi Ghats: Join Assi Ghat zero-plastic drive!`,
+    `🎓 LPU Campus: Save energy in hostel rooms today!`,
+    `🌱 Neutralize your footprint with certified offsets!`,
+  ];
+
+  // Auto rotate speech bubble every 4 seconds when closed
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setBubbleIndex((prev) => (prev + 1) % bubbleTips.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [bubbleTips.length]);
 
   // Initialize personalized greeting without raw markdown stars or hashes
   useEffect(() => {
@@ -98,19 +116,38 @@ const EcoBotWidget = () => {
   if (!user) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      {/* Floating Toggle Button */}
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+      {/* Auto-Rotating Floating Speech Bubble when Closed */}
+      {!isOpen && (
+        <div
+          onClick={() => setIsOpen(true)}
+          className="mb-2.5 max-w-[260px] cursor-pointer rounded-2xl bg-[#090E1A]/95 backdrop-blur-xl border border-emerald-500/40 p-3.5 shadow-2xl transition-all duration-300 hover:scale-105 hover:border-emerald-400 group animate-pulse"
+        >
+          <div className="flex items-center justify-between text-[9px] font-extrabold uppercase tracking-wider text-emerald-400 mb-1">
+            <span className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              Eco Intelligence
+            </span>
+            <span className="text-[9px] text-slate-400 font-semibold group-hover:text-emerald-300">Tap to chat →</span>
+          </div>
+          <p className="text-xs text-slate-200 font-medium leading-snug">
+            {bubbleTips[bubbleIndex]}
+          </p>
+        </div>
+      )}
+
+      {/* Floating Toggle Button (No brackets around name) */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`flex items-center gap-2 rounded-full px-4 py-3 text-xs font-black text-slate-950 shadow-2xl transition-all duration-300 border ${
+          className={`flex items-center gap-2.5 rounded-full px-5 py-3.5 text-xs font-black text-slate-950 shadow-2xl transition-all duration-300 border ${
             isAdmin
               ? "bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 border-amber-300 shadow-amber-500/40 hover:scale-105"
               : "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 border-emerald-300/40 shadow-emerald-500/40 hover:scale-105"
           }`}
         >
           <span className="text-base animate-bounce">{isAdmin ? "👑" : "🤖"}</span>
-          <span>{isAdmin ? `Admin AI Console (${userName})` : `Ask EcoBot (${userName})`}</span>
+          <span>{isAdmin ? "Admin AI Console" : "Ask EcoBot AI"}</span>
         </button>
       )}
 
@@ -131,7 +168,7 @@ const EcoBotWidget = () => {
               </div>
               <div>
                 <h4 className="font-extrabold text-white text-sm">
-                  {isAdmin ? `Super Admin Console (${userName})` : `EcoBot AI (${userName})`}
+                  {isAdmin ? "Super Admin Command Console" : "EcoBot AI Advisor"}
                 </h4>
                 <p className={`text-[10px] font-semibold ${isAdmin ? "text-amber-400" : "text-emerald-400"}`}>
                   {isAdmin ? "🛡️ VIP Command Center Active" : "Online • Personal AI Assistant"}
