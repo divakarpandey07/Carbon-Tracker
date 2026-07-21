@@ -1,17 +1,30 @@
 import { useState, useEffect } from "react";
 import api from "../utils/api";
-import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
+const categoryLabels = {
+  transport: "🚗 Transport",
+  food: "🍽️ Food & Diet",
+  electricity: "⚡ Energy & Power",
+  water: "💧 Water Saving",
+  waste: "🗑️ Waste & Recycling",
+  general: "🌍 Eco Lifestyle",
+};
+
+const categoryBadges = {
+  transport: "bg-blue-500/15 border-blue-500/30 text-blue-400",
+  food: "bg-amber-500/15 border-amber-500/30 text-amber-400",
+  electricity: "bg-yellow-500/15 border-yellow-500/30 text-yellow-400",
+  water: "bg-cyan-500/15 border-cyan-500/30 text-cyan-400",
+  waste: "bg-emerald-500/15 border-emerald-500/30 text-emerald-400",
+  general: "bg-purple-500/15 border-purple-500/30 text-purple-400",
+};
+
 const Challenges = () => {
-  const { user } = useAuth();
   const [challenges, setChallenges] = useState([]);
-  const [myChallenges, setMyChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [joiningId, setJoiningId] = useState(null);
-  const [updatingId, setUpdatingId] = useState(null);
-  const [progressInput, setProgressInput] = useState({});
-  const [message, setMessage] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const fetchChallenges = async () => {
     try {
@@ -19,238 +32,166 @@ const Challenges = () => {
       setChallenges(data);
     } catch (err) {
       console.error("Failed to fetch challenges:", err);
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const fetchMyChallenges = async () => {
-    try {
-      const { data } = await api.get("/challenges/my-challenges");
-      setMyChallenges(data);
-    } catch (err) {
-      console.error("Failed to fetch my challenges:", err);
-    }
-  };
-
-  const loadAllData = async () => {
-    setLoading(true);
-    await Promise.all([fetchChallenges(), fetchMyChallenges()]);
-    setLoading(false);
   };
 
   useEffect(() => {
-    loadAllData();
+    fetchChallenges();
   }, []);
 
   const handleJoin = async (id) => {
     setJoiningId(id);
-    setMessage("");
     try {
       await api.post(`/challenges/${id}/join`);
-      setMessage("Joined challenge successfully! Track your progress in My Active Challenges below.");
-      await loadAllData();
+      setChallenges(
+        challenges.map((c) => (c._id === id ? { ...c, isJoined: true } : c))
+      );
     } catch (err) {
-      setMessage(err.response?.data?.message || "Failed to join");
+      alert(err.response?.data?.message || "Failed to join challenge");
     } finally {
       setJoiningId(null);
     }
   };
 
-  const handleUpdateProgress = async (challengeId, currentProgress, targetValue) => {
-    const valueStr = progressInput[challengeId];
-    if (valueStr === undefined || valueStr === "") return;
-    const addedVal = Number(valueStr);
-    if (isNaN(addedVal) || addedVal < 0) return;
+  const filteredChallenges =
+    selectedCategory === "all"
+      ? challenges
+      : challenges.filter((c) => c.category === selectedCategory);
 
-    const newProgress = Number(currentProgress || 0) + addedVal;
-    setUpdatingId(challengeId);
-    try {
-      await api.put(`/challenges/${challengeId}/progress`, { progressValue: newProgress });
-      setMessage("Progress updated successfully!");
-      setProgressInput({ ...progressInput, [challengeId]: "" });
-      await loadAllData();
-    } catch (err) {
-      setMessage(err.response?.data?.message || "Failed to update progress");
-    } finally {
-      setUpdatingId(null);
-    }
-  };
+  const activeJoinedChallenges = challenges.filter((c) => c.isJoined);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Header Hero Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+        {/* Minimalist Header */}
+        <div className="relative overflow-hidden rounded-3xl bg-slate-900/40 backdrop-blur-xl p-8 sm:p-10 border border-white/10 shadow-2xl">
           <div className="relative z-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
-              Community & Regional Quests
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-full">
+              Eco Quests & Action Drives
             </span>
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
-              Carbon Reduction Challenges ⚡
+            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-3">
+              Sustainability Challenges 🎯
             </h1>
-            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-2xl">
-              Participate in localized eco-drives — from LPU campus green commutes to Varanasi Ghats zero-plastic initiatives. Earn impact points and boost your leaderboard standing!
+            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
+              Join local campus drives, Varanasi Ghats cleanups, and individual eco challenges to earn points and cut your footprint.
             </p>
           </div>
         </div>
 
-        {message && (
-          <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 p-4 rounded-2xl text-xs font-medium">
-            {message}
+        {/* My Active Joined Challenges Progress Section */}
+        {activeJoinedChallenges.length > 0 && (
+          <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-emerald-500/30 p-6 sm:p-8 shadow-2xl space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🚀</span>
+              <h2 className="text-lg font-black text-white tracking-tight">My Active Quests ({activeJoinedChallenges.length})</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeJoinedChallenges.map((c) => (
+                <div key={c._id} className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
+                  <div className="flex justify-between items-start">
+                    <h4 className="font-bold text-white text-sm">{c.title}</h4>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded-full">
+                      Active
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 line-clamp-2">{c.description}</p>
+                  <div className="pt-2 flex justify-between items-center text-xs">
+                    <span className="text-emerald-400 font-bold">+{c.points} pts</span>
+                    <span className="text-slate-500">{c.durationDays} days challenge</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
+        {/* Category Filter */}
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setSelectedCategory("all")}
+            className={`px-4 py-2 rounded-2xl text-xs font-bold transition ${
+              selectedCategory === "all"
+                ? "bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20"
+                : "bg-slate-900/40 border border-white/10 text-slate-300 hover:bg-white/5"
+            }`}
+          >
+            All Challenges ({challenges.length})
+          </button>
+          {Object.entries(categoryLabels).map(([catKey, catLabel]) => (
+            <button
+              key={catKey}
+              onClick={() => setSelectedCategory(catKey)}
+              className={`px-4 py-2 rounded-2xl text-xs font-bold transition ${
+                selectedCategory === catKey
+                  ? "bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20"
+                  : "bg-slate-900/40 border border-white/10 text-slate-300 hover:bg-white/5"
+              }`}
+            >
+              {catLabel}
+            </button>
+          ))}
+        </div>
+
         {loading ? (
-          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+          <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-8 text-center text-slate-400">
             Loading challenges...
           </div>
+        ) : filteredChallenges.length === 0 ? (
+          <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-8 text-center text-slate-400">
+            No challenges available in this category right now.
+          </div>
         ) : (
-          <>
-            {/* My Active Challenges Section */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">🏆</span>
-                  <h2 className="text-xl font-bold text-white tracking-tight">My Active Challenges</h2>
-                </div>
-                <span className="text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1 rounded-full">
-                  {myChallenges.length} Active
-                </span>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredChallenges.map((c) => {
+              const badgeStyle = categoryBadges[c.category] || categoryBadges.general;
 
-              {myChallenges.length === 0 ? (
-                <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 text-center text-slate-400 text-xs">
-                  You haven't joined any challenges yet. Explore available quests below!
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {myChallenges.map((item) => {
-                    const c = item.challenge;
-                    if (!c) return null;
-                    const percent = Math.min(100, Math.round(((item.progressValue || 0) / c.targetValue) * 100));
-
-                    return (
-                      <div
-                        key={item._id}
-                        className={`rounded-3xl bg-slate-900/90 border ${
-                          item.isCompleted ? "border-emerald-500/50 bg-emerald-950/20" : "border-slate-800"
-                        } shadow-xl p-6 flex flex-col justify-between space-y-4`}
-                      >
-                        <div>
-                          <div className="flex justify-between items-start gap-3 mb-2">
-                            <h3 className="font-bold text-white text-base">{c.title}</h3>
-                            {item.isCompleted ? (
-                              <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2.5 py-1 rounded-full shrink-0">
-                                ✓ Completed (+{item.pointsEarned} pts)
-                              </span>
-                            ) : (
-                              <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-1 rounded-full shrink-0">
-                                In Progress
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-xs text-slate-400 leading-relaxed mb-3">{c.description}</p>
-
-                          {/* Progress Bar */}
-                          <div>
-                            <div className="flex justify-between text-xs font-semibold text-slate-300 mb-1.5">
-                              <span>Challenge Progress</span>
-                              <span className="text-emerald-400">
-                                {item.progressValue || 0} / {c.targetValue} ({percent}%)
-                              </span>
-                            </div>
-                            <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
-                              <div
-                                className={`h-2.5 rounded-full transition-all duration-500 ${
-                                  item.isCompleted
-                                    ? "bg-gradient-to-r from-emerald-500 to-teal-400"
-                                    : "bg-gradient-to-r from-emerald-600 to-teal-500"
-                                }`}
-                                style={{ width: `${percent}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {!item.isCompleted && (
-                          <div className="pt-3 border-t border-slate-800 flex gap-2">
-                            <input
-                              type="number"
-                              placeholder="Add progress value"
-                              value={progressInput[c._id] || ""}
-                              onChange={(e) =>
-                                setProgressInput({ ...progressInput, [c._id]: e.target.value })
-                              }
-                              className="flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-100 outline-none focus:border-emerald-500"
-                            />
-                            <button
-                              onClick={() => handleUpdateProgress(c._id, item.progressValue, c.targetValue)}
-                              disabled={updatingId === c._id}
-                              className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold px-3.5 py-1.5 text-xs hover:from-emerald-400 hover:to-teal-400 transition disabled:opacity-50"
-                            >
-                              {updatingId === c._id ? "..." : "Log Progress"}
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* All Available Challenges Section */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">📍</span>
-                  <h2 className="text-xl font-bold text-white tracking-tight">Available Regional & Community Challenges</h2>
-                </div>
-                <span className="text-xs text-slate-400">{challenges.length} Available</span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {challenges.map((c) => {
-                  const isAlreadyJoined = c.isJoined || myChallenges.some((m) => m.challenge?._id === c._id);
-
-                  return (
-                    <div key={c._id} className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl p-6 flex flex-col justify-between space-y-4">
-                      <div>
-                        <div className="flex justify-between items-start gap-3 mb-2">
-                          <h3 className="font-bold text-white text-base">{c.title}</h3>
-                          <span className="text-xs font-extrabold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1 rounded-full shrink-0">
-                            +{c.pointsReward} pts
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-400 leading-relaxed mb-3">{c.description}</p>
-                        <div className="text-[11px] text-slate-500 font-medium">
-                          🗓️ {new Date(c.startDate).toLocaleDateString()} → {new Date(c.endDate).toLocaleDateString()}
-                          {" • "}Target: {c.targetValue}
-                        </div>
-                      </div>
-
-                      {isAlreadyJoined ? (
-                        <button
-                          disabled
-                          className="w-full rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 font-bold py-2.5 text-xs flex items-center justify-center gap-1 cursor-not-allowed opacity-90"
-                        >
-                          <span>✓</span> Already Joined
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleJoin(c._id)}
-                          disabled={joiningId === c._id}
-                          className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold py-2.5 text-xs hover:from-emerald-400 hover:to-teal-400 transition shadow-lg shadow-emerald-500/10 disabled:opacity-50"
-                        >
-                          {joiningId === c._id ? "Joining..." : "Join Challenge"}
-                        </button>
-                      )}
+              return (
+                <div
+                  key={c._id}
+                  className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-2xl p-6 flex flex-col justify-between space-y-4 hover:border-emerald-500/30 hover:scale-[1.02] transition-all"
+                >
+                  <div>
+                    <div className="flex justify-between items-start mb-3">
+                      <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full border ${badgeStyle}`}>
+                        {categoryLabels[c.category] || c.category}
+                      </span>
+                      <span className="text-xs font-black text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
+                        +{c.points} pts
+                      </span>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-          </>
+
+                    <h3 className="font-bold text-white text-lg mb-2">{c.title}</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed mb-4">{c.description}</p>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span className="text-xs text-slate-500 font-medium">⏱️ {c.durationDays} Days</span>
+
+                    {c.isJoined ? (
+                      <button
+                        disabled
+                        className="px-4 py-2 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold text-xs cursor-default"
+                      >
+                        ✓ Already Joined
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleJoin(c._id)}
+                        disabled={joiningId === c._id}
+                        className="px-5 py-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs hover:from-emerald-400 hover:to-teal-400 transition shadow-lg shadow-emerald-500/10 disabled:opacity-50"
+                      >
+                        {joiningId === c._id ? "Joining..." : "Accept Challenge"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>

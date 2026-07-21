@@ -93,39 +93,39 @@ const Feed = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Header Hero Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+        <div className="relative overflow-hidden rounded-3xl bg-slate-900/40 backdrop-blur-xl p-8 sm:p-10 border border-white/10 shadow-2xl">
           <div className="relative z-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-full">
               Social Network
             </span>
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
+            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-3">
               Eco Community Feed 💬
             </h1>
-            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl">
+            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
               Share your sustainability achievements, tips from campus & regional drives, and celebrate green milestones with fellow members.
             </p>
           </div>
         </div>
 
         {/* Create Post Form */}
-        <form onSubmit={handlePost} className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 shadow-xl space-y-4">
+        <form onSubmit={handlePost} className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-6 shadow-2xl space-y-4">
           <textarea
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
             placeholder="Share your eco progress, tips, or Varanasi Ghats / LPU campus updates..."
             rows={3}
             maxLength={500}
-            className="w-full rounded-2xl border border-slate-700 bg-slate-950 p-4 text-xs text-slate-100 outline-none focus:border-emerald-500"
+            className="w-full rounded-2xl border border-slate-700/80 bg-slate-950/80 p-4 text-xs text-slate-100 outline-none focus:border-emerald-500"
           />
           <div className="flex justify-between items-center gap-3">
             <select
               value={postType}
               onChange={(e) => setPostType(e.target.value)}
-              className="rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-slate-100 outline-none focus:border-emerald-500"
+              className="rounded-xl border border-slate-700/80 bg-slate-950/80 px-3.5 py-2 text-xs text-slate-100 outline-none focus:border-emerald-500"
             >
               {Object.entries(postTypeLabels).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
@@ -134,7 +134,7 @@ const Feed = () => {
             <button
               type="submit"
               disabled={posting || !newPost.trim()}
-              className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-2 text-xs font-bold text-slate-950 shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-400 transition disabled:opacity-50"
+              className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-2 text-xs font-black text-slate-950 shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-400 transition disabled:opacity-50"
             >
               {posting ? "Posting..." : "Share Post"}
             </button>
@@ -142,11 +142,11 @@ const Feed = () => {
         </form>
 
         {loading ? (
-          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+          <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-8 text-center text-slate-400">
             Loading community feed...
           </div>
         ) : posts.length === 0 ? (
-          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+          <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-8 text-center text-slate-400">
             No posts yet. Be the first to share an eco milestone!
           </div>
         ) : (
@@ -156,7 +156,7 @@ const Feed = () => {
               const isOwner = post.user?._id === user._id;
 
               return (
-                <div key={post._id} className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl p-6 space-y-4">
+                <div key={post._id} className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-2xl p-6 space-y-4">
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="font-bold text-white text-base">{post.user?.name}</p>
@@ -176,7 +176,7 @@ const Feed = () => {
 
                   <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">{post.content}</p>
 
-                  <div className="flex items-center gap-4 text-xs text-slate-400 border-t border-slate-800 pt-3">
+                  <div className="flex items-center gap-4 text-xs text-slate-400 border-t border-slate-800/80 pt-3">
                     <button
                       onClick={() => handleLike(post._id)}
                       className={`flex items-center gap-1.5 font-bold transition ${isLiked ? "text-red-400" : "hover:text-red-400"}`}
@@ -189,7 +189,7 @@ const Feed = () => {
                   {post.comments.length > 0 && (
                     <div className="space-y-2 border-t border-slate-800/80 pt-3">
                       {post.comments.map((c, idx) => (
-                        <div key={idx} className="text-xs rounded-xl bg-slate-950 p-2.5 border border-slate-800">
+                        <div key={idx} className="text-xs rounded-xl bg-slate-950/80 p-2.5 border border-slate-800">
                           <span className="font-bold text-emerald-400">{c.user?.name}: </span>
                           <span className="text-slate-300">{c.text}</span>
                         </div>
@@ -206,11 +206,11 @@ const Feed = () => {
                         setCommentInputs({ ...commentInputs, [post._id]: e.target.value })
                       }
                       onKeyDown={(e) => e.key === "Enter" && handleComment(post._id)}
-                      className="flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-1.5 text-xs text-slate-100 outline-none focus:border-emerald-500"
+                      className="flex-1 rounded-xl border border-slate-700/80 bg-slate-950/80 px-3.5 py-1.5 text-xs text-slate-100 outline-none focus:border-emerald-500"
                     />
                     <button
                       onClick={() => handleComment(post._id)}
-                      className="px-4 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 font-bold text-xs hover:bg-slate-700 transition"
+                      className="px-4 py-1.5 rounded-xl bg-slate-950/80 border border-slate-700 text-emerald-400 font-bold text-xs hover:bg-slate-900 transition"
                     >
                       Send
                     </button>

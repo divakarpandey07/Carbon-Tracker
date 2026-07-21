@@ -51,7 +51,7 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
 
   if (activities.length === 0) {
     return (
-      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-8 text-center text-slate-400 flex flex-col items-center justify-center min-h-[250px]">
+      <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-8 text-center text-slate-400 flex flex-col items-center justify-center min-h-[250px]">
         <span className="text-4xl mb-3">📝</span>
         <p className="font-semibold text-slate-200">No activity logs recorded yet</p>
         <p className="text-xs text-slate-500 mt-1">Add your daily travel or energy usage to start calculating.</p>
@@ -60,19 +60,19 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
   }
 
   return (
-    <div className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl overflow-hidden">
-      {/* Clean Header with Dropdown Select Filter (No ugly horizontal scrollbar) */}
-      <div className="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden">
+      {/* Clean Header with Dropdown Select Filter */}
+      <div className="p-5 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">History</span>
-          <h2 className="text-xl font-bold text-white tracking-tight">Recent Activity Logs</h2>
+          <h2 className="text-xl font-black text-white tracking-tight">Recent Activity Logs</h2>
         </div>
 
         <div className="flex items-center gap-2">
           <select
             value={selectedFilter}
             onChange={(e) => setSelectedFilter(e.target.value)}
-            className="bg-slate-950 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-3 py-1.5 outline-none focus:border-emerald-500"
+            className="bg-slate-950/80 border border-slate-700/80 text-slate-200 text-xs font-semibold rounded-xl px-3 py-1.5 outline-none focus:border-emerald-500"
           >
             <option value="all">All Categories ({activities.length})</option>
             <option value="transport">Transport 🚗</option>
@@ -87,7 +87,7 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
       </div>
 
       {/* Smooth scrollable logs list */}
-      <div className="divide-y divide-slate-800/80 max-h-[420px] overflow-y-auto pr-0.5">
+      <div className="divide-y divide-slate-800/60 max-h-[420px] overflow-y-auto pr-0.5">
         {filteredActivities.length === 0 ? (
           <div className="p-8 text-center text-xs text-slate-500">
             No logs found under "{selectedFilter}" category.
@@ -100,16 +100,16 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
             return (
               <div
                 key={a._id}
-                className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-slate-800/40 transition-colors"
+                className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-slate-800/30 transition-colors"
               >
                 <div className="flex items-start sm:items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-lg shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-center text-lg shrink-0">
                     {icon}
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-0.5">
                       <span className="font-bold text-white text-sm capitalize">{a.subType}</span>
-                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${badgeStyle}`}>
+                      <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md border ${badgeStyle}`}>
                         {a.category}
                       </span>
                     </div>
@@ -148,14 +148,14 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
                   {a.co2Emitted !== null && (
                     <div className="text-right">
                       <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">CO2 Impact</p>
-                      <p className="text-sm font-extrabold text-emerald-400">+{a.co2Emitted} kg</p>
+                      <p className="text-sm font-black text-emerald-400">+{a.co2Emitted} kg</p>
                     </div>
                   )}
 
                   <button
                     onClick={() => handleDelete(a._id)}
                     disabled={deletingId === a._id}
-                    className="px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-semibold text-red-400 hover:bg-red-500/20 hover:border-red-500/40 transition disabled:opacity-50"
+                    className="px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-semibold text-red-400 hover:bg-red-500/20 transition disabled:opacity-50"
                   >
                     {deletingId === a._id ? "..." : "Delete"}
                   </button>
@@ -168,7 +168,7 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
 
       {/* View All Toggle Footer if > 5 activities */}
       {filteredActivities.length > 5 && (
-        <div className="p-3 bg-slate-950/60 border-t border-slate-800 text-center">
+        <div className="p-3 bg-slate-950/60 border-t border-slate-800/80 text-center">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition"

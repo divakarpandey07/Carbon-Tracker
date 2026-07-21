@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-xl bg-slate-950/90 border border-slate-800 p-3 shadow-2xl backdrop-blur-md">
+      <div className="rounded-xl bg-slate-950/90 border border-slate-700 p-3 shadow-2xl backdrop-blur-md">
         <p className="text-xs font-semibold text-slate-400 mb-1">{label}</p>
         {payload.map((entry, index) => (
           <p key={index} className="text-xs font-bold" style={{ color: entry.color }}>
@@ -75,7 +75,7 @@ const Analytics = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
+      <div className="min-h-screen text-slate-100 font-sans">
         <Navbar />
         <div className="max-w-4xl mx-auto p-8 text-center text-slate-400">Loading analytics...</div>
       </div>
@@ -83,19 +83,19 @@ const Analytics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Header Hero Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+        <div className="relative overflow-hidden rounded-3xl bg-slate-900/40 backdrop-blur-xl p-8 sm:p-10 border border-white/10 shadow-2xl">
           <div className="relative z-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-full">
               Advanced Insights
             </span>
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
+            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-3">
               Analytics & Net Impact 📊
             </h1>
-            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl">
+            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
               Deep dive into category-wise monthly breakdowns, platform comparisons, net carbon neutrality score, and logging streaks.
             </p>
           </div>
@@ -103,31 +103,31 @@ const Analytics = () => {
 
         {/* Overview Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-5 text-center shadow-xl">
+          <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-5 text-center shadow-2xl">
             <p className="text-3xl font-black text-emerald-400">{overview?.totalFootprintCO2 ?? 0}</p>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Total kg CO2 Emitted</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Total kg CO2 Emitted</p>
           </div>
-          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-5 text-center shadow-xl">
+          <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-5 text-center shadow-2xl">
             <p className="text-3xl font-black text-teal-400">{overview?.totalOffsetsPurchased ?? 0}</p>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Offsets Bought (kg)</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Offsets Bought (kg)</p>
           </div>
-          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-5 text-center shadow-xl">
+          <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-5 text-center shadow-2xl">
             <p className="text-3xl font-black text-amber-400">{overview?.challengesCompleted ?? 0}</p>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Quests Won</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Quests Won</p>
           </div>
-          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-5 text-center shadow-xl">
+          <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-5 text-center shadow-2xl">
             <p className="text-3xl font-black text-purple-400">{streaks?.currentStreak ?? 0}</p>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Day Streak 🔥</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Day Streak 🔥</p>
           </div>
         </div>
 
         {/* Net Impact & Platform Comparison */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {netImpact && (
-            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 shadow-xl space-y-4">
+            <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-6 shadow-2xl space-y-4">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Balance Sheet</span>
-                <h2 className="text-xl font-bold text-white tracking-tight">Net Carbon Impact</h2>
+                <h2 className="text-xl font-black text-white tracking-tight">Net Carbon Impact</h2>
               </div>
               <div className="space-y-2 text-xs">
                 <div className="flex justify-between text-slate-300">
@@ -138,7 +138,7 @@ const Analytics = () => {
                   <span>Gross CO2 Offsetted</span>
                   <span className="font-bold text-emerald-400">{netImpact.totalOffset} kg</span>
                 </div>
-                <div className="flex justify-between border-t border-slate-800 pt-3 text-sm font-bold">
+                <div className="flex justify-between border-t border-slate-800/80 pt-3 text-sm font-bold">
                   <span className="text-white">Net Carbon Score</span>
                   <span className={netImpact.netImpact <= 0 ? "text-emerald-400" : "text-amber-400"}>
                     {netImpact.netImpact} kg {netImpact.netImpact <= 0 ? "🌱 Carbon Neutral+" : "⚠️ Positive Emission"}
@@ -149,10 +149,10 @@ const Analytics = () => {
           )}
 
           {comparison && (
-            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 shadow-xl space-y-4">
+            <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-6 shadow-2xl space-y-4">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-teal-400">Benchmarking</span>
-                <h2 className="text-xl font-bold text-white tracking-tight">You vs Platform Average</h2>
+                <h2 className="text-xl font-black text-white tracking-tight">You vs Platform Average</h2>
               </div>
               <div className="space-y-2 text-xs">
                 <div className="flex justify-between text-slate-300">
@@ -163,7 +163,7 @@ const Analytics = () => {
                   <span>Community Average</span>
                   <span className="font-bold text-slate-400">{comparison.platformAverage} kg</span>
                 </div>
-                <div className="pt-2 border-t border-slate-800">
+                <div className="pt-2 border-t border-slate-800/80">
                   <p className={`text-xs font-bold ${comparison.comparedToPlatform === "below_average" ? "text-emerald-400" : "text-amber-400"}`}>
                     {comparison.comparedToPlatform === "below_average"
                       ? "🎉 Excellent! Your footprint is lower than the community average."
@@ -178,10 +178,10 @@ const Analytics = () => {
         </div>
 
         {/* Monthly Bar Chart */}
-        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 shadow-xl">
+        <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-6 sm:p-8 shadow-2xl">
           <div className="mb-6">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Monthly Stacked Graph</span>
-            <h2 className="text-xl font-bold text-white tracking-tight">Emissions by Category</h2>
+            <h2 className="text-xl font-black text-white tracking-tight">Emissions by Category</h2>
           </div>
 
           {categoryTrends.length === 0 ? (
@@ -190,7 +190,7 @@ const Analytics = () => {
             <div className="w-full h-[320px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={categoryTrends}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.5} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
                   <XAxis dataKey="period" tick={{ fill: "#94a3b8", fontSize: 11 }} />
                   <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} />
                   <Tooltip content={<CustomTooltip />} />
