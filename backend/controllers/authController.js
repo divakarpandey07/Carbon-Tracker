@@ -106,4 +106,55 @@ const updateProfile = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getMe, applyAsProvider, updateProfile };
+const getUserProfile = async (req, res) => {
+  try {
+    const User = require("../models/User");
+    const ChallengeParticipant = require("../models/ChallengeParticipant");
+    const Activity = require("../models/Activity");
+
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User profile not found" });
+
+    const challengeStats = await ChallengeParticipant.aggregate([
+      { $match: { user: user._id, isCompleted: true } },
+      {
+        $group: {
+          _id: "$user",
+          totalPoints: { $sum: "$pointsEarned" },
+          challengesCompleted: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const footprintStats = await Activity.aggregate([
+      { $match: { user: user._id } },
+      {
+        $group: {
+          _id: "$user",
+          totalCO2: { $sum: "$co2Emitted" },
+          totalLogs: { $sum: 1 },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        organization: user.organization,
+        createdAt: user.createdAt,
+      },
+      totalPoints: challengeStats[0]?.totalPoints || 0,
+      challengesCompleted: challengeStats[0]?.challengesCompleted || 0,
+      totalCO2Tracked: Math.round((footprintStats[0]?.totalCO2 || 0) * 10) / 10,
+      totalLogs: footprintStats[0]?.totalLogs || 0,
+    });
+  } catch (error) {
+    console.error("GET USER PROFILE ERROR:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, getMe, applyAsProvider, updateProfile, getUserProfile };

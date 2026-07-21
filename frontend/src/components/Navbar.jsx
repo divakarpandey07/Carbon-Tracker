@@ -14,8 +14,8 @@ const Navbar = () => {
   };
 
   const getLinkClass = (path) => {
-    const isActive = location.pathname === path;
-    return `block md:inline text-xs font-bold px-3.5 py-2 rounded-full transition-all duration-200 ${
+    const isActive = location.pathname === path || (path === "/profile" && location.pathname.startsWith("/profile"));
+    return `block md:inline text-xs font-bold px-3 py-2 rounded-full transition-all duration-200 ${
       isActive
         ? "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.25)]"
         : "text-slate-300 hover:text-emerald-400 hover:bg-white/5"
@@ -50,6 +50,7 @@ const Navbar = () => {
             <Link to="/my-orders" className={getLinkClass("/my-orders")}>Orders</Link>
             <Link to="/feed" className={getLinkClass("/feed")}>Feed</Link>
             <Link to="/analytics" className={getLinkClass("/analytics")}>Analytics</Link>
+            <Link to="/profile" className={getLinkClass("/profile")}>Profile</Link>
             {user?.role === "user" && (
               <Link to="/apply-provider" className={getLinkClass("/apply-provider")}>Become Provider</Link>
             )}
@@ -61,7 +62,7 @@ const Navbar = () => {
             )}
             <button
               onClick={handleLogout}
-              className="ml-3 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 shadow-sm"
+              className="ml-2 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white px-3 py-1 rounded-full text-xs font-bold transition-all duration-200 shadow-sm"
             >
               Logout
             </button>
@@ -87,6 +88,7 @@ const Navbar = () => {
             <Link to="/my-orders" className={getLinkClass("/my-orders")} onClick={() => setMenuOpen(false)}>Orders</Link>
             <Link to="/feed" className={getLinkClass("/feed")} onClick={() => setMenuOpen(false)}>Feed</Link>
             <Link to="/analytics" className={getLinkClass("/analytics")} onClick={() => setMenuOpen(false)}>Analytics</Link>
+            <Link to="/profile" className={getLinkClass("/profile")} onClick={() => setMenuOpen(false)}>Profile</Link>
             {user?.role === "user" && (
               <Link to="/apply-provider" className={getLinkClass("/apply-provider")} onClick={() => setMenuOpen(false)}>Become Provider</Link>
             )}

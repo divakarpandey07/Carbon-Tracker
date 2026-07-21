@@ -16,6 +16,7 @@ import Analytics from "./pages/Analytics";
 import AdminPanel from "./pages/AdminPanel";
 import TeamChallenges from "./pages/TeamChallenges";
 import Landing from "./pages/Landing";
+import UserProfile from "./pages/UserProfile";
 
 import EcoBotWidget from "./components/EcoBotWidget";
 
@@ -30,6 +31,8 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/challenges" element={<ProtectedRoute><Challenges /></ProtectedRoute>} />
             <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+            <Route path="/profile/:id" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
             <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
             <Route path="/marketplace/:id" element={<ProtectedRoute><ListingDetail /></ProtectedRoute>} />
             <Route path="/my-orders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />

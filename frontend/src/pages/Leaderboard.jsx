@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import api from "../utils/api";
 import Navbar from "../components/Navbar";
 
@@ -36,7 +37,7 @@ const Leaderboard = () => {
               Community Leaderboard 🏆
             </h1>
             <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
-              Rankings based on total points earned by completing carbon reduction challenges and community quests.
+              Click any member's name to inspect their public sustainability profile, total points, and unlocked eco badges.
             </p>
           </div>
         </div>
@@ -62,7 +63,12 @@ const Leaderboard = () => {
                   </div>
 
                   <div>
-                    <p className="font-bold text-white text-base">{entry.name}</p>
+                    <Link
+                      to={`/profile/${entry.userId}`}
+                      className="font-bold text-white text-base hover:text-emerald-400 transition"
+                    >
+                      {entry.name} 👤
+                    </Link>
                     {entry.organization && (
                       <p className="text-xs text-emerald-400 font-semibold">🏢 {entry.organization}</p>
                     )}

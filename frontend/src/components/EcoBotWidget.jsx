@@ -3,19 +3,20 @@ import { useAuth } from "../context/AuthContext";
 import api from "../utils/api";
 
 const quickPrompts = [
-  "📊 Summary of my footprint & logs",
-  "🚗 How to reduce car commute emissions?",
-  "⚡ Petrol Car vs EV Footprint comparison",
-  "🚩 Varanasi Ghats zero-plastic clean tips",
-  "🎓 LPU Campus green habits & energy saving",
+  "Hii EcoBot 👋",
+  "Summary of my footprint & logs 📊",
+  "How to reduce car commute emissions? 🚗",
+  "Petrol Car vs EV Footprint comparison ⚡",
+  "Varanasi Ghats zero-plastic clean tips 🚩",
+  "LPU Campus green habits & energy saving 🎓",
 ];
 
 const botKnowledge = {
-  car: "🚗 **Transport Insights**: Transport is often 50%+ of individual carbon footprint. Carpooling twice a week cuts 8.5 kg CO2/week. Keeping tires inflated & driving <60km/h improves fuel efficiency by 15%.",
-  ev: "⚡ **Petrol vs EV**: Electric Vehicles emit ~70% less lifecycle CO2 than petrol cars, even on regular grid power. In India, 1 kWh EV charge = 0.04 kg CO2 vs Petrol 0.22 kg CO2 per km!",
-  varanasi: "🚩 **Varanasi Ghats Drive**: Avoid single-use plastic cups at tea stalls near Assi & Dashashwamedh Ghats. Use terracotta Kulhads & pattal plates for local street food!",
-  lpu: "🎓 **LPU Green Campus**: Walking between UniMall & Hostel Block 34 saves ~1.2 kg CO2 daily compared to auto-rickshaws. Turning off hostel room AC when away saves 3.5 kWh daily!",
-  default: "🌿 Ask me anything about carbon calculations, food/travel factors, or regional sustainability drives.",
+  car: "Transport Insights: Transport is often 50%+ of individual carbon footprint. Carpooling twice a week cuts 8.5 kg CO2/week. Keeping tires inflated and driving under 60 km/h improves fuel efficiency by 15%.",
+  ev: "Petrol vs EV: Electric Vehicles emit around 70% less lifecycle CO2 than petrol cars, even on regular grid power. In India, 1 kWh EV charge = 0.04 kg CO2 vs Petrol 0.22 kg CO2 per km!",
+  varanasi: "Varanasi Ghats Drive: Avoid single-use plastic cups at tea stalls near Assi & Dashashwamedh Ghats. Use terracotta Kulhads & pattal plates for local street food!",
+  lpu: "LPU Green Campus: Walking between UniMall & Hostel Block 34 saves around 1.2 kg CO2 daily compared to auto-rickshaws. Turning off hostel room AC when away saves 3.5 kWh daily!",
+  default: "I am your AI Eco-Advisor! Ask me anything about carbon calculations, food/travel factors, or regional sustainability drives.",
 };
 
 const EcoBotWidget = () => {
@@ -28,12 +29,12 @@ const EcoBotWidget = () => {
   const isAdmin = user?.role === "admin";
   const userName = user?.name || "Friend";
 
-  // Initialize personalized greeting
+  // Initialize personalized greeting without raw markdown stars or hashes
   useEffect(() => {
     if (user) {
       const greeting = isAdmin
         ? `Greetings & Supreme Respects, Super Admin ${userName}! 🛡️ All carbon telemetry databases, provider verification queues, and marketplace systems are running at 100% efficiency under your command. How may I serve you today, Boss?`
-        : `Hello ${userName}! 🤖 I am EcoBot, your personal AI Sustainability Advisor. I am monitoring your logged activities. How can I help you reduce your carbon footprint today?`;
+        : `Hii ${userName}! 👋 I am EcoBot, your personal AI Sustainability Advisor. I am monitoring your logged activities. How can I help you reduce your carbon footprint today?`;
 
       setMessages([{ sender: "bot", text: greeting }]);
     }
@@ -60,21 +61,25 @@ const EcoBotWidget = () => {
       const lower = query.toLowerCase();
       let reply = botKnowledge.default;
 
-      if (lower.includes("stats") || lower.includes("footprint") || lower.includes("summary") || lower.includes("my logs")) {
+      if (lower.includes("hi") || lower.includes("hii") || lower.includes("hello") || lower.includes("hey") || lower.includes("namaste") || lower.includes("greetings")) {
+        reply = isAdmin
+          ? `Hii & Supreme Respects, Super Admin ${userName}! 🛡️ Always a pleasure to assist you. All platform telemetry and verified providers are active under your supervision, Boss!`
+          : `Hii ${userName}! 👋 Hope you are having a wonderful day. Ready to check your eco progress or learn quick carbon saving tips?`;
+      } else if (lower.includes("stats") || lower.includes("footprint") || lower.includes("summary") || lower.includes("my logs")) {
         if (userStats && userStats.grandTotalCO2 !== undefined) {
           reply = isAdmin
-            ? `🛡️ **Super Admin ${userName}'s Telemetry Overview**:\n• Total CO2 Emitted: **${userStats.grandTotalCO2} kg**\n• Logged Categories: **${userStats.breakdown?.length || 0} categories active**\n\nEverything is fully synchronized, Boss!`
-            : `📊 **${userName}'s Carbon Summary**:\n• Total Emitted: **${userStats.grandTotalCO2} kg CO2e**\n• Active Breakdown: ${userStats.breakdown?.map((b) => `${b._id} (${b.totalCO2}kg)`).join(", ") || "No logs yet"}.\n\nKeep logging activities to maintain your streak!`;
+            ? `Super Admin ${userName}'s Telemetry Overview:\n• Total CO2 Emitted: ${userStats.grandTotalCO2} kg\n• Logged Categories: ${userStats.breakdown?.length || 0} active categories.\nEverything is fully synchronized, Boss!`
+            : `${userName}'s Carbon Summary:\n• Total Emitted: ${userStats.grandTotalCO2} kg CO2e\n• Active Breakdown: ${userStats.breakdown?.map((b) => `${b._id} (${b.totalCO2}kg)`).join(", ") || "No logs yet"}.\nKeep logging activities to maintain your streak!`;
         } else {
-          reply = `📊 ${userName}, you haven't recorded any activity logs yet. Try logging your daily travel or energy use!`;
+          reply = `${userName}, you haven't recorded any activity logs yet. Try logging your daily travel or energy use!`;
         }
       } else if (lower.includes("car") || lower.includes("commute") || lower.includes("travel")) {
         reply = isAdmin
-          ? `🛡️ For Super Admin ${userName}: ` + botKnowledge.car
+          ? `For Super Admin ${userName}: ` + botKnowledge.car
           : botKnowledge.car;
       } else if (lower.includes("ev") || lower.includes("petrol") || lower.includes("electric")) {
         reply = isAdmin
-          ? `🛡️ Special EV telemetry briefing for Super Admin ${userName}: ` + botKnowledge.ev
+          ? `Special EV telemetry briefing for Super Admin ${userName}: ` + botKnowledge.ev
           : botKnowledge.ev;
       } else if (lower.includes("varanasi") || lower.includes("ghat")) {
         reply = botKnowledge.varanasi;
@@ -82,12 +87,12 @@ const EcoBotWidget = () => {
         reply = botKnowledge.lpu;
       } else {
         reply = isAdmin
-          ? `🛡️ Super Admin ${userName}, your query "${query}" has been logged into the system console. I am standing by to assist with any platform management!`
-          : `🌿 ${userName}, I'm here to help! ${botKnowledge.default}`;
+          ? `Super Admin ${userName}, your query "${query}" has been processed. I am standing by to assist with any platform management!`
+          : `${userName}, I'm here to help! ${botKnowledge.default}`;
       }
 
       setMessages((prev) => [...prev, { sender: "bot", text: reply }]);
-    }, 500);
+    }, 450);
   };
 
   if (!user) return null;
@@ -153,8 +158,8 @@ const EcoBotWidget = () => {
                     m.sender === "user"
                       ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold"
                       : isAdmin
-                      ? "bg-slate-900 text-amber-200 border border-amber-500/30 shadow-lg"
-                      : "bg-slate-900 text-slate-200 border border-slate-800"
+                      ? "bg-slate-900 text-amber-200 border border-amber-500/30 shadow-lg font-medium"
+                      : "bg-slate-900 text-slate-200 border border-slate-800 font-medium"
                   }`}
                 >
                   {m.text}
