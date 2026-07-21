@@ -5,19 +5,11 @@ import api from "../utils/api";
 const quickPrompts = [
   "Hii EcoBot 👋",
   "Summary of my footprint & logs 📊",
-  "How to reduce car commute emissions? 🚗",
-  "Petrol Car vs EV Footprint comparison ⚡",
-  "Varanasi Ghats zero-plastic clean tips 🚩",
-  "LPU Campus green habits & energy saving 🎓",
+  "Platform Architecture & Tech Stack 📐",
+  "How is CO2 calculated? (Viva Q&A) 🎯",
+  "How Offset Marketplace & PDF Works? 🛍️",
+  "Varanasi Ghats & LPU Campus Quests 🚩",
 ];
-
-const botKnowledge = {
-  car: "Transport Insights: Transport is often 50%+ of individual carbon footprint. Carpooling twice a week cuts 8.5 kg CO2/week. Keeping tires inflated and driving under 60 km/h improves fuel efficiency by 15%.",
-  ev: "Petrol vs EV: Electric Vehicles emit around 70% less lifecycle CO2 than petrol cars, even on regular grid power. In India, 1 kWh EV charge = 0.04 kg CO2 vs Petrol 0.22 kg CO2 per km!",
-  varanasi: "Varanasi Ghats Drive: Avoid single-use plastic cups at tea stalls near Assi & Dashashwamedh Ghats. Use terracotta Kulhads & pattal plates for local street food!",
-  lpu: "LPU Green Campus: Walking between UniMall & Hostel Block 34 saves around 1.2 kg CO2 daily compared to auto-rickshaws. Turning off hostel room AC when away saves 3.5 kWh daily!",
-  default: "I am your AI Eco-Advisor! Ask me anything about carbon calculations, food/travel factors, or regional sustainability drives.",
-};
 
 const EcoBotWidget = () => {
   const { user } = useAuth();
@@ -32,14 +24,14 @@ const EcoBotWidget = () => {
 
   const bubbleTips = [
     `Hii ${userName}! 👋 Want to check your carbon footprint?`,
+    `📐 Viva Q&A: Ask me about Platform Architecture!`,
     `🚗 Tip: Carpooling 2 days/week saves 8.5 kg CO2!`,
     `⚡ Tip: Switching to EV cuts 70% lifecycle emissions!`,
     `🚩 Varanasi Ghats: Join Assi Ghat zero-plastic drive!`,
     `🎓 LPU Campus: Save energy in hostel rooms today!`,
-    `🌱 Neutralize your footprint with certified offsets!`,
   ];
 
-  // Auto rotate speech bubble every 4 seconds when closed
+  // Auto rotate speech bubble every 4.5 seconds when closed
   useEffect(() => {
     const timer = setInterval(() => {
       setBubbleIndex((prev) => (prev + 1) % bubbleTips.length);
@@ -51,8 +43,8 @@ const EcoBotWidget = () => {
   useEffect(() => {
     if (user) {
       const greeting = isAdmin
-        ? `Greetings & Supreme Respects, Super Admin ${userName}! 🛡️ All carbon telemetry databases, provider verification queues, and marketplace systems are running at 100% efficiency under your command. How may I serve you today, Boss?`
-        : `Hii ${userName}! 👋 I am EcoBot, your personal AI Sustainability Advisor. I am monitoring your logged activities. How can I help you reduce your carbon footprint today?`;
+        ? `Greetings & Supreme Respects, Super Admin ${userName}! 🛡️ All carbon telemetry databases, provider verification queues, and architecture systems are operating at 100% efficiency under your command. How may I serve you today, Boss?`
+        : `Hii ${userName}! 👋 I am EcoBot AI, your personal platform guide & viva assistant. Ask me anything about your footprint, website features, tech stack, or viva questions!`;
 
       setMessages([{ sender: "bot", text: greeting }]);
     }
@@ -77,40 +69,142 @@ const EcoBotWidget = () => {
 
     setTimeout(() => {
       const lower = query.toLowerCase();
-      let reply = botKnowledge.default;
+      let reply = "";
 
-      if (lower.includes("hi") || lower.includes("hii") || lower.includes("hello") || lower.includes("hey") || lower.includes("namaste") || lower.includes("greetings")) {
-        reply = isAdmin
-          ? `Hii & Supreme Respects, Super Admin ${userName}! 🛡️ Always a pleasure to assist you. All platform telemetry and verified providers are active under your supervision, Boss!`
-          : `Hii ${userName}! 👋 Hope you are having a wonderful day. Ready to check your eco progress or learn quick carbon saving tips?`;
-      } else if (lower.includes("stats") || lower.includes("footprint") || lower.includes("summary") || lower.includes("my logs")) {
+      // Detect language (Hindi / Hinglish vs English)
+      const isHinglish =
+        lower.includes("kya") ||
+        lower.includes("kaise") ||
+        lower.includes("batao") ||
+        lower.includes("aap") ||
+        lower.includes("kaam") ||
+        lower.includes("karta") ||
+        lower.includes("hai") ||
+        lower.includes("hum") ||
+        lower.includes("skte") ||
+        lower.includes("kuch") ||
+        lower.includes("chahiye") ||
+        lower.includes("bhai") ||
+        lower.includes("ho");
+
+      // 1. Greetings
+      if (
+        lower.includes("hi") ||
+        lower.includes("hii") ||
+        lower.includes("hello") ||
+        lower.includes("hey") ||
+        lower.includes("namaste") ||
+        lower.includes("kaise ho") ||
+        lower.includes("greetings")
+      ) {
+        if (isAdmin) {
+          reply = isHinglish
+            ? `Hii aur Pranam Super Admin ${userName}! 🛡️ Aapka swagat hai. CarbonTrack ke sabhi server, database, aur admin controls bilkul smooth chal rahe hain, Boss!`
+            : `Hii & Supreme Respects, Super Admin ${userName}! 🛡️ Always a honor to assist you. All platform telemetry and verified systems are active under your supervision, Boss!`;
+        } else {
+          reply = isHinglish
+            ? `Hii ${userName}! 👋 Main bilkul mast hu! Aap bataiye, aaj website ke baare me kya jaan-na hai ya viva/architecture ka koi sawaal puchhna hai?`
+            : `Hii ${userName}! 👋 Hope you are having a fantastic day. Ready to check your eco progress or ask any viva/architecture questions about the platform?`;
+        }
+      }
+
+      // 2. Personal Stats & Footprint
+      else if (
+        lower.includes("stats") ||
+        lower.includes("footprint") ||
+        lower.includes("summary") ||
+        lower.includes("my logs") ||
+        lower.includes("mera score")
+      ) {
         if (userStats && userStats.grandTotalCO2 !== undefined) {
-          reply = isAdmin
-            ? `Super Admin ${userName}'s Telemetry Overview:\n• Total CO2 Emitted: ${userStats.grandTotalCO2} kg\n• Logged Categories: ${userStats.breakdown?.length || 0} active categories.\nEverything is fully synchronized, Boss!`
+          reply = isHinglish
+            ? `${userName} ka Carbon Summary:\n• Total CO2 Emitted: ${userStats.grandTotalCO2} kg\n• Active Categories: ${userStats.breakdown?.map((b) => `${b._id} (${b.totalCO2}kg)`).join(", ") || "No logs yet"}.\nAap regular activity log karke rank badha sakte ho!`
             : `${userName}'s Carbon Summary:\n• Total Emitted: ${userStats.grandTotalCO2} kg CO2e\n• Active Breakdown: ${userStats.breakdown?.map((b) => `${b._id} (${b.totalCO2}kg)`).join(", ") || "No logs yet"}.\nKeep logging activities to maintain your streak!`;
         } else {
-          reply = `${userName}, you haven't recorded any activity logs yet. Try logging your daily travel or energy use!`;
+          reply = isHinglish
+            ? `${userName}, abhi tak aapne koi log add nahi kiya hai. Dashboard se daily travel ya energy log karein!`
+            : `${userName}, you haven't recorded any activity logs yet. Try logging your daily travel or energy use on the Dashboard!`;
         }
-      } else if (lower.includes("car") || lower.includes("commute") || lower.includes("travel")) {
-        reply = isAdmin
-          ? `For Super Admin ${userName}: ` + botKnowledge.car
-          : botKnowledge.car;
-      } else if (lower.includes("ev") || lower.includes("petrol") || lower.includes("electric")) {
-        reply = isAdmin
-          ? `Special EV telemetry briefing for Super Admin ${userName}: ` + botKnowledge.ev
-          : botKnowledge.ev;
-      } else if (lower.includes("varanasi") || lower.includes("ghat")) {
-        reply = botKnowledge.varanasi;
-      } else if (lower.includes("lpu") || lower.includes("campus") || lower.includes("hostel")) {
-        reply = botKnowledge.lpu;
-      } else {
-        reply = isAdmin
-          ? `Super Admin ${userName}, your query "${query}" has been processed. I am standing by to assist with any platform management!`
-          : `${userName}, I'm here to help! ${botKnowledge.default}`;
+      }
+
+      // 3. Platform Architecture & Tech Stack (Viva Q&A)
+      else if (
+        lower.includes("architecture") ||
+        lower.includes("tech stack") ||
+        lower.includes("workflow") ||
+        lower.includes("framework") ||
+        lower.includes("kaise bana hai") ||
+        lower.includes("how it works") ||
+        lower.includes("viva")
+      ) {
+        reply = isHinglish
+          ? `CarbonTrack Platform Architecture (MERN Stack):\n• Frontend: React.js + TailwindCSS (Bio-Tech Obsidian Design System) + Recharts Graphs.\n• Backend: Node.js + Express.js REST API + JWT Authentication.\n• Database: MongoDB (Mongoose Schema Model for Users, Activities, Challenges, Marketplace, Orders).\n• Key Features: Smart Vehicle Specs Engine, 1-Click PDF Certificate Generator, CSV Data Exporter, Corporate Team Leaderboard.`
+          : `CarbonTrack Platform Architecture (MERN Stack):\n• Frontend: React.js + TailwindCSS + Recharts interactive graphs.\n• Backend: Node.js + Express.js REST API + JWT Auth.\n• Database: MongoDB with schemas for Users, Activities, Challenges, Marketplace, & Orders.\n• Key Features: Smart Vehicle Engine, 1-Click PDF Carbon Certificates, CSV Data Export, & Team Leaderboards.`;
+      }
+
+      // 4. How CO2 is Calculated
+      else if (
+        lower.includes("calculate") ||
+        lower.includes("formula") ||
+        lower.includes("co2") ||
+        lower.includes("calculation") ||
+        lower.includes("hisab")
+      ) {
+        reply = isHinglish
+          ? `Carbon Calculation Formula:\nEmission (kg CO2) = Activity Quantity x Emission Factor x Vehicle Multipliers.\nExample Factors:\n• Petrol Car: 0.21 kg CO2/km\n• Diesel SUV: 0.24 kg CO2/km\n• EV Electric: 0.04 kg CO2/km\n• Electricity: 0.82 kg CO2/kWh`
+          : `Carbon Calculation Formula:\nEmission (kg CO2) = Activity Quantity x Emission Factor x Vehicle Metadata Multipliers.\nStandard Benchmark Factors:\n• Petrol Car: 0.21 kg CO2/km\n• Diesel SUV: 0.24 kg CO2/km\n• Electric EV: 0.04 kg CO2/km\n• Grid Power: 0.82 kg CO2/kWh`;
+      }
+
+      // 5. Marketplace, Orders & Certificates
+      else if (
+        lower.includes("marketplace") ||
+        lower.includes("offset") ||
+        lower.includes("certificate") ||
+        lower.includes("order") ||
+        lower.includes("khareed")
+      ) {
+        reply = isHinglish
+          ? `Marketplace & Certificate Workflow:\n1. Provider verified offset project list karta hai.\n2. User marketplace se CO2 offset credit (e.g. 50 kg) khareedta hai.\n3. System automatically user ka net carbon score neutral kar deta hai.\n4. User My Orders page se 1-Click Official Verified PDF Certificate download ya print kar sakta hai!`
+          : `Marketplace & Offset Certificate Workflow:\n1. Verified offset providers list green projects.\n2. Users purchase offset credits to neutralize emissions.\n3. Net carbon score updates automatically.\n4. Users can download or print an Official Verified PDF Offset Certificate from the My Orders page!`;
+      }
+
+      // 6. Regional & Campus Drives (Varanasi & LPU)
+      else if (
+        lower.includes("varanasi") ||
+        lower.includes("lpu") ||
+        lower.includes("ghat") ||
+        lower.includes("campus")
+      ) {
+        reply = isHinglish
+          ? `Regional Quests & Campus Drives:\n• Varanasi Ghats: Assi Ghat zero-plastic drive & terracotta Kulhad usage.\n• LPU Campus: UniMall to Block 34 walking challenge & Hostel room AC power saver drive.\nAap Challenges page par jaakar in quests ko accept karke Eco Points earn kar sakte ho!`
+          : `Regional & Campus Quests:\n• Varanasi Ghats: Zero-plastic patrols near Assi & Dashashwamedh Ghats.\n• LPU Campus: Walking challenges between UniMall & Hostel blocks.\nAccept these quests on the Challenges page to earn Eco Points!`;
+      }
+
+      // 7. What can you do / General website capabilities
+      else if (
+        lower.includes("what can you do") ||
+        lower.includes("kya kar sakte ho") ||
+        lower.includes("features") ||
+        lower.includes("help")
+      ) {
+        reply = isHinglish
+          ? `CarbonTrack AI Advisor capabilities:\n1. Daily carbon logging & Smart vehicle calculations\n2. Real-time footprint trend graphs & AI tips\n3. CSV Telemetry data export & PDF Carbon Offset Certificates\n4. LPU Campus & Varanasi regional quests & Leaderboard ranking\n5. Full Viva / Architecture Q&A guidance for project presentation!`
+          : `CarbonTrack AI Capabilities:\n1. Daily carbon logging & Smart vehicle multiplier engine\n2. Live trend graphs & real-world equivalent insights\n3. CSV Telemetry data export & 1-Click PDF Carbon Certificates\n4. LPU Campus & Varanasi regional drives with global leaderboard\n5. Complete Architecture & Viva Q&A assistance!`;
+      }
+
+      // Fallback response
+      else {
+        reply = isHinglish
+          ? `${userName}, main aapki madad ke liye tayyar hu! Aap mujhse Website Architecture, CO2 Calculation Formula, PDF Certificates, ya Viva Q&A ke baare me puchh sakte ho.`
+          : `${userName}, I am standing by to assist! Ask me about Platform Architecture, CO2 Calculation Formulas, Offset Certificates, or Viva Q&A.`;
+
+        if (isAdmin) {
+          reply = `Super Admin ${userName}, your query "${query}" has been logged into the console. Standing by for your commands, Boss!`;
+        }
       }
 
       setMessages((prev) => [...prev, { sender: "bot", text: reply }]);
-    }, 450);
+    }, 400);
   };
 
   if (!user) return null;
@@ -121,12 +215,12 @@ const EcoBotWidget = () => {
       {!isOpen && (
         <div
           onClick={() => setIsOpen(true)}
-          className="mb-2.5 max-w-[260px] cursor-pointer rounded-2xl bg-[#090E1A]/95 backdrop-blur-xl border border-emerald-500/40 p-3.5 shadow-2xl transition-all duration-300 hover:scale-105 hover:border-emerald-400 group animate-pulse"
+          className="mb-2.5 max-w-[270px] cursor-pointer rounded-2xl bg-[#090E1A]/95 backdrop-blur-xl border border-emerald-500/40 p-3.5 shadow-2xl transition-all duration-300 hover:scale-105 hover:border-emerald-400 group animate-pulse"
         >
           <div className="flex items-center justify-between text-[9px] font-extrabold uppercase tracking-wider text-emerald-400 mb-1">
             <span className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-              Eco Intelligence
+              Eco AI Assistant
             </span>
             <span className="text-[9px] text-slate-400 font-semibold group-hover:text-emerald-300">Tap to chat →</span>
           </div>
@@ -136,7 +230,7 @@ const EcoBotWidget = () => {
         </div>
       )}
 
-      {/* Floating Toggle Button (No brackets around name) */}
+      {/* Floating Toggle Button (Clean name without brackets) */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -168,10 +262,10 @@ const EcoBotWidget = () => {
               </div>
               <div>
                 <h4 className="font-extrabold text-white text-sm">
-                  {isAdmin ? "Super Admin Command Console" : "EcoBot AI Advisor"}
+                  {isAdmin ? "Super Admin Command Console" : "EcoBot AI & Viva Assistant"}
                 </h4>
                 <p className={`text-[10px] font-semibold ${isAdmin ? "text-amber-400" : "text-emerald-400"}`}>
-                  {isAdmin ? "🛡️ VIP Command Center Active" : "Online • Personal AI Assistant"}
+                  {isAdmin ? "🛡️ VIP Command Center Active" : "Online • Multilingual AI Advisor"}
                 </p>
               </div>
             </div>
@@ -191,7 +285,7 @@ const EcoBotWidget = () => {
                 className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl p-3 text-xs leading-relaxed whitespace-pre-line ${
+                  className={`max-w-[88%] rounded-2xl p-3 text-xs leading-relaxed whitespace-pre-line ${
                     m.sender === "user"
                       ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold"
                       : isAdmin
@@ -222,7 +316,7 @@ const EcoBotWidget = () => {
           <div className="p-3 bg-slate-900 border-t border-slate-800 flex gap-2">
             <input
               type="text"
-              placeholder={`Ask EcoBot, ${userName}...`}
+              placeholder={`Ask EcoBot in Hindi, Hinglish or English...`}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
