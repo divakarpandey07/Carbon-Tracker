@@ -7,6 +7,7 @@ import ActivityList from "../components/ActivityList";
 import FootprintSummary from "../components/FootprintSummary";
 import FootprintTrendChart from "../components/FootprintTrendChart";
 import EcoInsights from "../components/EcoInsights";
+import SavingsCalculator from "../components/SavingsCalculator";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -90,8 +91,9 @@ const Dashboard = () => {
 
         {/* Activity Form and Activity List + Live Eco Insights */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-5 sticky top-20">
+          <div className="lg:col-span-5 sticky top-20 space-y-8">
             <ActivityForm onActivityAdded={handleActivityAdded} />
+            <SavingsCalculator />
           </div>
 
           <div className="lg:col-span-7 space-y-8">

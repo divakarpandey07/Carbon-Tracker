@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import api from "../utils/api";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
+import CertificateModal from "../components/CertificateModal";
 
 const statusBadges = {
   pending: "bg-amber-500/15 border-amber-500/30 text-amber-400",
@@ -10,8 +12,10 @@ const statusBadges = {
 };
 
 const MyOrders = () => {
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCertificateOrder, setSelectedCertificateOrder] = useState(null);
 
   const fetchOrders = async () => {
     try {
@@ -52,7 +56,7 @@ const MyOrders = () => {
               My Offset Orders 📜
             </h1>
             <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
-              Track your carbon credit purchases, transaction references, and payment statuses.
+              Track your carbon credit purchases, transaction references, and download official offset certificates.
             </p>
           </div>
         </div>
@@ -89,6 +93,14 @@ const MyOrders = () => {
                     <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${badgeStyle}`}>
                       {o.status}
                     </span>
+
+                    <button
+                      onClick={() => setSelectedCertificateOrder(o)}
+                      className="px-3.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold text-xs hover:bg-emerald-500/30 transition flex items-center gap-1"
+                    >
+                      📜 Certificate
+                    </button>
+
                     {o.status === "pending" && (
                       <button
                         onClick={() => handleCancel(o._id)}
@@ -104,6 +116,16 @@ const MyOrders = () => {
           </div>
         )}
       </div>
+
+      {/* Certificate Modal */}
+      {selectedCertificateOrder && (
+        <CertificateModal
+          isOpen={!!selectedCertificateOrder}
+          onClose={() => setSelectedCertificateOrder(null)}
+          orderData={selectedCertificateOrder}
+          user={user}
+        />
+      )}
     </div>
   );
 };

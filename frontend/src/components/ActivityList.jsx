@@ -39,6 +39,30 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
     }
   };
 
+  const handleExportCSV = () => {
+    if (activities.length === 0) return;
+
+    const headers = ["Category", "Subtype", "Quantity", "Unit", "CO2 Emitted (kg)", "Date", "Notes"];
+    const rows = activities.map((a) => [
+      `"${a.category}"`,
+      `"${a.subType}"`,
+      a.quantity,
+      `"${a.unit}"`,
+      a.co2Emitted || 0,
+      `"${new Date(a.date).toLocaleDateString()}"`,
+      `"${(a.notes || "").replace(/"/g, '""')}"`,
+    ]);
+
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `carbon_telemetry_logs_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const filteredActivities = useMemo(() => {
     if (selectedFilter === "all") return activities;
     return activities.filter((a) => a.category === selectedFilter);
@@ -68,7 +92,7 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
           <h2 className="text-xl font-black text-white tracking-tight">Recent Activity Logs</h2>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
           <select
             value={selectedFilter}
             onChange={(e) => setSelectedFilter(e.target.value)}
@@ -83,6 +107,13 @@ const ActivityList = ({ activities, onActivityDeleted }) => {
             <option value="waste">Waste 🗑️</option>
             <option value="other">Other 📦</option>
           </select>
+
+          <button
+            onClick={handleExportCSV}
+            className="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 text-xs font-bold transition flex items-center gap-1"
+          >
+            <span>📥</span> CSV
+          </button>
         </div>
       </div>
 

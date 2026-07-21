@@ -17,8 +17,9 @@ import AdminPanel from "./pages/AdminPanel";
 import TeamChallenges from "./pages/TeamChallenges";
 import Landing from "./pages/Landing";
 
+import EcoBotWidget from "./components/EcoBotWidget";
+
 function App() {
-  // return (
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -55,6 +56,7 @@ function App() {
             />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
+          <EcoBotWidget />
         </div>
       </AuthProvider>
     </BrowserRouter>
