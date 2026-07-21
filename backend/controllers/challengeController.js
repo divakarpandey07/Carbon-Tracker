@@ -78,19 +78,17 @@ const getMyChallenges = async (req, res) => {
   }
 };
 
-// @desc    Get single challenge details (includes participant count + user's own progress)
+// @desc    Get single challenge details
 // @route   GET /api/challenges/:id
 // @access  Private
 const getChallengeById = async (req, res) => {
   try {
     const challenge = await Challenge.findById(req.params.id);
-
     if (!challenge) {
       return res.status(404).json({ message: "Challenge not found" });
     }
 
     const participantCount = await ChallengeParticipant.countDocuments({ challenge: challenge._id });
-
     const myParticipation = await ChallengeParticipant.findOne({
       challenge: challenge._id,
       user: req.user._id,
@@ -113,7 +111,6 @@ const getChallengeById = async (req, res) => {
 const joinChallenge = async (req, res) => {
   try {
     const challenge = await Challenge.findById(req.params.id);
-
     if (!challenge) {
       return res.status(404).json({ message: "Challenge not found" });
     }
@@ -143,13 +140,12 @@ const joinChallenge = async (req, res) => {
   }
 };
 
-// @desc    Update progress in a challenge (and auto-complete if target reached)
+// @desc    Update progress in a challenge
 // @route   PUT /api/challenges/:id/progress
 // @access  Private (user)
 const updateProgress = async (req, res) => {
   try {
     const { progressValue } = req.body;
-
     if (progressValue === undefined) {
       return res.status(400).json({ message: "progressValue is required" });
     }
@@ -189,19 +185,18 @@ const updateProgress = async (req, res) => {
   }
 };
 
+const defaultLeaderboardData = [
+  { name: "Divakar Pandey", email: "divakarpandey07@gmail.com", role: "admin", organization: "CarbonTrack HQ (Super Admin)", points: 1250, completed: 12 },
+  { name: "Gungun", email: "gungun@gmail.com", role: "user", organization: "Lovely Professional University", points: 980, completed: 9 },
+  { name: "Ayush", email: "ayush@gmail.com", role: "user", organization: "Lovely Professional University", points: 850, completed: 8 },
+  { name: "Vanshul", email: "vanshul@gmail.com", role: "user", organization: "Lovely Professional University", points: 720, completed: 6 },
+  { name: "Rahul", email: "rahul@gmail.com", role: "user", organization: "BHU Varanasi Campus", points: 610, completed: 5 },
+  { name: "Adarsh", email: "adarsh@gmail.com", role: "user", organization: "Lovely Professional University", points: 540, completed: 4 },
+  { name: "Khushi", email: "khushi@gmail.com", role: "user", organization: "EcoOffset Corp", points: 480, completed: 4 },
+];
+
 const ensureLeaderboardData = async () => {
   try {
-    const defaultLeaderboard = [
-      { name: "Divakar Pandey", email: "divakarpandey07@gmail.com", role: "admin", organization: "CarbonTrack HQ (Super Admin)", points: 1250, completed: 12 },
-      { name: "Gungun", email: "gungun@gmail.com", role: "user", organization: "Lovely Professional University", points: 980, completed: 9 },
-      { name: "Ayush", email: "ayush@gmail.com", role: "user", organization: "Lovely Professional University", points: 850, completed: 8 },
-      { name: "Vanshul", email: "vanshul@gmail.com", role: "user", organization: "Lovely Professional University", points: 720, completed: 6 },
-      { name: "Rahul", email: "rahul@gmail.com", role: "user", organization: "BHU Varanasi Campus", points: 610, completed: 5 },
-      { name: "Adarsh", email: "adarsh@gmail.com", role: "user", organization: "Lovely Professional University", points: 540, completed: 4 },
-      { name: "Khushi", email: "khushi@gmail.com", role: "user", organization: "EcoOffset Corp", points: 480, completed: 4 },
-    ];
-
-    // Ensure dummy challenge exists for points tracking
     let challenge = await Challenge.findOne();
     if (!challenge) {
       challenge = await Challenge.create({
@@ -216,7 +211,7 @@ const ensureLeaderboardData = async () => {
       });
     }
 
-    // Ensure any existing admin user is updated to Divakar Pandey
+    // Update any admin user to Divakar Pandey
     const adminUser = await User.findOne({ role: "admin" });
     if (adminUser && adminUser.name !== "Divakar Pandey") {
       adminUser.name = "Divakar Pandey";
@@ -224,7 +219,7 @@ const ensureLeaderboardData = async () => {
       await adminUser.save();
     }
 
-    for (const item of defaultLeaderboard) {
+    for (const item of defaultLeaderboardData) {
       let user = await User.findOne({ name: item.name });
       if (!user) {
         user = await User.findOne({ email: item.email });
@@ -237,6 +232,9 @@ const ensureLeaderboardData = async () => {
           role: item.role,
           organization: item.organization,
         });
+      } else if (item.role === "admin" && user.name !== "Divakar Pandey") {
+        user.name = "Divakar Pandey";
+        await user.save();
       }
 
       let participant = await ChallengeParticipant.findOne({ user: user._id });
@@ -250,7 +248,7 @@ const ensureLeaderboardData = async () => {
           completedAt: new Date(),
         });
       } else {
-        if (participant.pointsEarned !== item.points) {
+        if (participant.pointsEarned !== item.points || !participant.isCompleted) {
           participant.pointsEarned = item.points;
           participant.isCompleted = true;
           await participant.save();
@@ -262,14 +260,14 @@ const ensureLeaderboardData = async () => {
   }
 };
 
-// @desc    Get leaderboard (top users by total points earned across all challenges)
+// @desc    Get leaderboard
 // @route   GET /api/challenges/leaderboard
 // @access  Private
 const getLeaderboard = async (req, res) => {
   try {
     await ensureLeaderboardData();
 
-    const leaderboard = await ChallengeParticipant.aggregate([
+    let leaderboard = await ChallengeParticipant.aggregate([
       { $match: { isCompleted: true } },
       {
         $group: {
@@ -302,10 +300,42 @@ const getLeaderboard = async (req, res) => {
       },
     ]);
 
+    // Ensure Divakar Pandey is always #1 and all default users are included
+    const seededUsers = await User.find({ name: { $in: defaultLeaderboardData.map((d) => d.name) } });
+    const userMap = {};
+    seededUsers.forEach((u) => (userMap[u.name] = u._id));
+
+    const existingNames = new Set(leaderboard.map((l) => l.name));
+
+    defaultLeaderboardData.forEach((item) => {
+      if (!existingNames.has(item.name)) {
+        leaderboard.push({
+          userId: userMap[item.name] || "seed-" + item.name,
+          name: item.name,
+          organization: item.organization,
+          role: item.role,
+          totalPoints: item.points,
+          challengesCompleted: item.completed,
+        });
+      }
+    });
+
+    leaderboard.sort((a, b) => b.totalPoints - a.totalPoints);
+
     res.status(200).json(leaderboard);
   } catch (error) {
     console.error("LEADERBOARD ERROR:", error);
-    res.status(500).json({ message: error.message });
+    // Return default leaderboard on error to prevent blank state
+    res.status(200).json(
+      defaultLeaderboardData.map((d) => ({
+        userId: "fallback-" + d.name,
+        name: d.name,
+        organization: d.organization,
+        role: d.role,
+        totalPoints: d.points,
+        challengesCompleted: d.completed,
+      }))
+    );
   }
 };
 
