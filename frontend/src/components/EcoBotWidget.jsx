@@ -68,144 +68,120 @@ const EcoBotWidget = () => {
     setInput("");
 
     setTimeout(() => {
-      const lower = query.toLowerCase();
+      const q = query.toLowerCase().trim();
+
+      // ── Language detect ──────────────────────────────────────────────────────
+      const hindiWords = ["kya","kaise","batao","aap","kaam","karta","hai","hum","skte","kuch","chahiye","bhai","ho","kaisa","iska","karo","kr","me","mujhe","mera","meri","nahi","haan","theek","website","platform","samjhao","dikhao","dekho","puchh","puchho","btao","kar","jo","ye","yeh","woh","wahi","acha","accha","janana","janna","lagao","laga","bol","bolo","kitna","kitne","kyun","kyunki","toh","to","bhi","sirf","sab","abhi","pehle","baad","kab","kahan","kon","kaun"];
+      const isHinglish = hindiWords.some((w) => q.includes(w));
+
+      // ── Matchers ─────────────────────────────────────────────────────────────
+      const match = (...terms) => terms.some((t) => q.includes(t));
+
       let reply = "";
 
-      // Detect language (Hindi / Hinglish vs English)
-      const isHinglish =
-        lower.includes("kya") ||
-        lower.includes("kaise") ||
-        lower.includes("batao") ||
-        lower.includes("aap") ||
-        lower.includes("kaam") ||
-        lower.includes("karta") ||
-        lower.includes("hai") ||
-        lower.includes("hum") ||
-        lower.includes("skte") ||
-        lower.includes("kuch") ||
-        lower.includes("chahiye") ||
-        lower.includes("bhai") ||
-        lower.includes("ho");
-
       // 1. Greetings
-      if (
-        lower.includes("hi") ||
-        lower.includes("hii") ||
-        lower.includes("hello") ||
-        lower.includes("hey") ||
-        lower.includes("namaste") ||
-        lower.includes("kaise ho") ||
-        lower.includes("greetings")
-      ) {
+      if (match("hi","hii","hello","hey","namaste","kaise ho","greet","sup","howdy","hola","pranam","namaskar","good morning","good evening","good afternoon")) {
         if (isAdmin) {
           reply = isHinglish
-            ? `Hii aur Pranam Super Admin ${userName}! 🛡️ Aapka swagat hai. CarbonTrack ke sabhi server, database, aur admin controls bilkul smooth chal rahe hain, Boss!`
-            : `Hii & Supreme Respects, Super Admin ${userName}! 🛡️ Always a honor to assist you. All platform telemetry and verified systems are active under your supervision, Boss!`;
+            ? `Pranam aur Supreme Swagat, Super Admin ${userName}! 🛡️\nCarbonTrack ke sabhi telemetry servers, database aur admin controls 100% active hain. Bataiye Boss, aaj kya karna hai?`
+            : `Hii & Supreme Respects, Super Admin ${userName}! 🛡️\nAll platform systems, admin controls & carbon telemetry databases are fully operational. How may I assist you today, Boss?`;
         } else {
           reply = isHinglish
-            ? `Hii ${userName}! 👋 Main bilkul mast hu! Aap bataiye, aaj website ke baare me kya jaan-na hai ya viva/architecture ka koi sawaal puchhna hai?`
-            : `Hii ${userName}! 👋 Hope you are having a fantastic day. Ready to check your eco progress or ask any viva/architecture questions about the platform?`;
+            ? `Hii ${userName}! 👋 Main bilkul theek hoon!\nAaj kya jaanna chahte ho — apna CO2 summary, viva questions, ya platform ke kisi feature ke baare mein?`
+            : `Hii ${userName}! 👋 Great to see you!\nAsk me anything — your carbon footprint stats, platform architecture, viva Q&A, or how any feature works!`;
         }
       }
 
-      // 2. Personal Stats & Footprint
-      else if (
-        lower.includes("stats") ||
-        lower.includes("footprint") ||
-        lower.includes("summary") ||
-        lower.includes("my logs") ||
-        lower.includes("mera score")
-      ) {
+      // 2. How it works / kaise kaam karta hai / workflow
+      else if (match("kaise kaam","how it work","kaam karta","workflow","how does","kaise chalta","how does this","how does the","kaise use","use kare","use karna","samjhao","explain","work karta","kaam krta")) {
+        reply = isHinglish
+          ? `CarbonTrack kaise kaam karta hai:\n\n1. Log in karo aur Dashboard par aao.\n2. Apni daily activities log karo (travel, electricity, food, shopping).\n3. System automatically CO2 calculate karta hai — formula: Activity Qty × Emission Factor.\n4. Footprint Summary aur Trend Graph real-time update hote hain.\n5. Challenges join karo → Eco Points kamao → Leaderboard mein rank karo.\n6. Marketplace se CO2 offset khareedho → Verified Certificate download karo!\n\nKoi bhi step detail mein samjhana ho toh bolo!`
+          : `How CarbonTrack works — step by step:\n\n1. Login and open the Dashboard.\n2. Log daily activities (travel, electricity, food, shopping).\n3. System auto-calculates CO2: Activity Qty × Emission Factor.\n4. View real-time Footprint Summary and Trend Graphs.\n5. Join Challenges → Earn Eco Points → Rank on Leaderboard.\n6. Buy CO2 offsets from Marketplace → Download Verified Certificate!\n\nAsk me about any specific step for more detail!`;
+      }
+
+      // 3. Personal Stats & Footprint
+      else if (match("stats","footprint","summary","my log","mera score","mera data","mera footprint","my footprint","meri activity","mere activities","kitna co2","how much co2","my co2","apna")) {
         if (userStats && userStats.grandTotalCO2 !== undefined) {
+          const bdwn = userStats.breakdown?.map((b) => `   • ${b._id}: ${b.totalCO2} kg CO2`).join("\n") || "   • Koi breakdown nahi";
           reply = isHinglish
-            ? `${userName} ka Carbon Summary:\n• Total CO2 Emitted: ${userStats.grandTotalCO2} kg\n• Active Categories: ${userStats.breakdown?.map((b) => `${b._id} (${b.totalCO2}kg)`).join(", ") || "No logs yet"}.\nAap regular activity log karke rank badha sakte ho!`
-            : `${userName}'s Carbon Summary:\n• Total Emitted: ${userStats.grandTotalCO2} kg CO2e\n• Active Breakdown: ${userStats.breakdown?.map((b) => `${b._id} (${b.totalCO2}kg)`).join(", ") || "No logs yet"}.\nKeep logging activities to maintain your streak!`;
+            ? `${userName} ka Live Carbon Summary 📊\n\nTotal CO2 Emitted: ${userStats.grandTotalCO2} kg\n\nCategory Breakdown:\n${bdwn}\n\nLeaderboard par apna rank badhane ke liye aur activities log karo!`
+            : `${userName}'s Live Carbon Summary 📊\n\nTotal CO2 Emitted: ${userStats.grandTotalCO2} kg CO2e\n\nCategory Breakdown:\n${bdwn}\n\nKeep logging to improve your leaderboard rank!`;
         } else {
           reply = isHinglish
-            ? `${userName}, abhi tak aapne koi log add nahi kiya hai. Dashboard se daily travel ya energy log karein!`
-            : `${userName}, you haven't recorded any activity logs yet. Try logging your daily travel or energy use on the Dashboard!`;
+            ? `${userName}, abhi tak koi activity log nahi ki hai. Dashboard par jao aur daily travel, electricity ya shopping log karo — score turant update ho jaayega!`
+            : `${userName}, no activity logs yet! Head to the Dashboard and log your daily travel, electricity, or food — your score updates instantly!`;
         }
       }
 
-      // 3. Platform Architecture & Tech Stack (Viva Q&A)
-      else if (
-        lower.includes("architecture") ||
-        lower.includes("tech stack") ||
-        lower.includes("workflow") ||
-        lower.includes("framework") ||
-        lower.includes("kaise bana hai") ||
-        lower.includes("how it works") ||
-        lower.includes("viva")
-      ) {
+      // 4. Architecture / Tech Stack / Viva
+      else if (match("architecture","tech stack","framework","mern","react","node","express","mongo","database","backend","frontend","kaise bana","built with","technology","technologies","tech","viva","project","developed","stack")) {
         reply = isHinglish
-          ? `CarbonTrack Platform Architecture (MERN Stack):\n• Frontend: React.js + TailwindCSS (Bio-Tech Obsidian Design System) + Recharts Graphs.\n• Backend: Node.js + Express.js REST API + JWT Authentication.\n• Database: MongoDB (Mongoose Schema Model for Users, Activities, Challenges, Marketplace, Orders).\n• Key Features: Smart Vehicle Specs Engine, 1-Click PDF Certificate Generator, CSV Data Exporter, Corporate Team Leaderboard.`
-          : `CarbonTrack Platform Architecture (MERN Stack):\n• Frontend: React.js + TailwindCSS + Recharts interactive graphs.\n• Backend: Node.js + Express.js REST API + JWT Auth.\n• Database: MongoDB with schemas for Users, Activities, Challenges, Marketplace, & Orders.\n• Key Features: Smart Vehicle Engine, 1-Click PDF Carbon Certificates, CSV Data Export, & Team Leaderboards.`;
+          ? `CarbonTrack Platform Architecture (MERN Stack) 📐\n\nFrontend:\n  • React.js + TailwindCSS (Bio-Tech Obsidian Dark Design)\n  • Recharts — interactive CO2 trend graphs\n\nBackend:\n  • Node.js + Express.js — REST API\n  • JWT Authentication (secure token-based login)\n\nDatabase:\n  • MongoDB + Mongoose\n  • Collections: Users, Activities, Challenges, Marketplace, Orders\n\nSpecial Features:\n  • Smart Vehicle Emission Engine (Petrol/Diesel/EV factors)\n  • 1-Click Canvas PNG + PDF Certificate Generator\n  • Multilingual AI Chatbot (Hindi/Hinglish/English)\n  • Regional Quests: Varanasi Ghats + LPU Campus`
+          : `CarbonTrack Platform Architecture (MERN Stack) 📐\n\nFrontend:\n  • React.js + TailwindCSS — Bio-Tech Obsidian Dark UI\n  • Recharts — live CO2 trend graphs\n\nBackend:\n  • Node.js + Express.js — RESTful API\n  • JWT Authentication — secure login sessions\n\nDatabase:\n  • MongoDB + Mongoose\n  • Collections: Users, Activities, Challenges, Marketplace, Orders\n\nKey Features:\n  • Smart Vehicle Emission Engine (Petrol/Diesel/EV)\n  • 1-Click PNG + PDF Certificate Generator\n  • Multilingual AI Chatbot (Hindi/Hinglish/English)\n  • Regional Quests: Varanasi Ghats + LPU Campus`;
       }
 
-      // 4. How CO2 is Calculated
-      else if (
-        lower.includes("calculate") ||
-        lower.includes("formula") ||
-        lower.includes("co2") ||
-        lower.includes("calculation") ||
-        lower.includes("hisab")
-      ) {
+      // 5. CO2 Calculation / Formula
+      else if (match("calculat","formula","co2","carbon","hisab","co 2","emission","factor","kitna","how much","emi")) {
         reply = isHinglish
-          ? `Carbon Calculation Formula:\nEmission (kg CO2) = Activity Quantity x Emission Factor x Vehicle Multipliers.\nExample Factors:\n• Petrol Car: 0.21 kg CO2/km\n• Diesel SUV: 0.24 kg CO2/km\n• EV Electric: 0.04 kg CO2/km\n• Electricity: 0.82 kg CO2/kWh`
-          : `Carbon Calculation Formula:\nEmission (kg CO2) = Activity Quantity x Emission Factor x Vehicle Metadata Multipliers.\nStandard Benchmark Factors:\n• Petrol Car: 0.21 kg CO2/km\n• Diesel SUV: 0.24 kg CO2/km\n• Electric EV: 0.04 kg CO2/km\n• Grid Power: 0.82 kg CO2/kWh`;
+          ? `CO2 Calculation Formula 🎯\n\nFormula:\nEmission (kg CO2) = Quantity × Emission Factor × Vehicle Multiplier\n\nExample Factors:\n  • Petrol Car → 0.21 kg CO2/km\n  • Diesel SUV → 0.24 kg CO2/km\n  • Electric EV → 0.04 kg CO2/km\n  • Electricity → 0.82 kg CO2/kWh\n  • Meat/Food → 3.0 kg CO2/kg\n  • Air Travel → 0.255 kg CO2/km\n\nUdaharan: Agar aap 50 km petrol car chalate ho:\n50 × 0.21 = 10.5 kg CO2`
+          : `CO2 Calculation Formula 🎯\n\nFormula:\nEmission (kg CO2) = Quantity × Emission Factor × Vehicle Multiplier\n\nKey Emission Factors:\n  • Petrol Car → 0.21 kg CO2/km\n  • Diesel SUV → 0.24 kg CO2/km\n  • Electric EV → 0.04 kg CO2/km\n  • Electricity → 0.82 kg CO2/kWh\n  • Meat/Food → 3.0 kg CO2/kg\n  • Air Travel → 0.255 kg CO2/km\n\nExample: 50km petrol drive = 50 × 0.21 = 10.5 kg CO2`;
       }
 
-      // 5. Marketplace, Orders & Certificates
-      else if (
-        lower.includes("marketplace") ||
-        lower.includes("offset") ||
-        lower.includes("certificate") ||
-        lower.includes("order") ||
-        lower.includes("khareed")
-      ) {
+      // 6. Marketplace / Certificate / Offset
+      else if (match("marketplace","offset","certificate","order","khareed","buy","purchase","download","pdf","neutralize","neutral")) {
         reply = isHinglish
-          ? `Marketplace & Certificate Workflow:\n1. Provider verified offset project list karta hai.\n2. User marketplace se CO2 offset credit (e.g. 50 kg) khareedta hai.\n3. System automatically user ka net carbon score neutral kar deta hai.\n4. User My Orders page se 1-Click Official Verified PDF Certificate download ya print kar sakta hai!`
-          : `Marketplace & Offset Certificate Workflow:\n1. Verified offset providers list green projects.\n2. Users purchase offset credits to neutralize emissions.\n3. Net carbon score updates automatically.\n4. Users can download or print an Official Verified PDF Offset Certificate from the My Orders page!`;
+          ? `Marketplace & Certificate Workflow 🛍️\n\n1. Marketplace page par jao.\n2. Verified green project choose karo (e.g. Mangrove Reforestation).\n3. CO2 offset credit khareedho (jitna aapka footprint hai).\n4. Net carbon score automatically neutral ho jaata hai.\n5. My Orders page se Official Verified Certificate:\n   → PNG Image download karo, YA\n   → PDF print karo (browser print dialog)\n\nCertificate mein aapka naam, total CO2, transaction reference, aur verified seal hota hai!`
+          : `Marketplace & Certificate Workflow 🛍️\n\n1. Go to the Marketplace page.\n2. Choose a verified green offset project.\n3. Purchase CO2 offset credits matching your footprint.\n4. Net carbon score auto-neutralizes.\n5. From My Orders page — download Official Certificate as:\n   → PNG Image (Download PNG button), OR\n   → PDF via browser print dialog\n\nThe certificate shows your name, total CO2, transaction ref & verified seal!`;
       }
 
-      // 6. Regional & Campus Drives (Varanasi & LPU)
-      else if (
-        lower.includes("varanasi") ||
-        lower.includes("lpu") ||
-        lower.includes("ghat") ||
-        lower.includes("campus")
-      ) {
+      // 7. Leaderboard
+      else if (match("leaderboard","rank","ranking","top","score","points","eco point","challenge","position")) {
         reply = isHinglish
-          ? `Regional Quests & Campus Drives:\n• Varanasi Ghats: Assi Ghat zero-plastic drive & terracotta Kulhad usage.\n• LPU Campus: UniMall to Block 34 walking challenge & Hostel room AC power saver drive.\nAap Challenges page par jaakar in quests ko accept karke Eco Points earn kar sakte ho!`
-          : `Regional & Campus Quests:\n• Varanasi Ghats: Zero-plastic patrols near Assi & Dashashwamedh Ghats.\n• LPU Campus: Walking challenges between UniMall & Hostel blocks.\nAccept these quests on the Challenges page to earn Eco Points!`;
+          ? `Leaderboard & Eco Points System 🏆\n\nTop Rankings:\n  🥇 #1: Divakar Pandey — 1250 pts (Super Admin)\n  🥈 #2: Gungun — 980 pts\n  🥉 #3: Ayush — 850 pts\n  #4: Vanshul — 720 pts\n  #5: Rahul — 610 pts\n\nPoints kaise kamao:\n  • Challenges complete karo → direct points milte hain\n  • Ek challenge = platform pe set pointsReward value\n  • Leaderboard page par dusron ka profile bhi dekh sakte ho!`
+          : `Leaderboard & Eco Points System 🏆\n\nCurrent Top Rankings:\n  🥇 #1: Divakar Pandey — 1250 pts (Super Admin)\n  🥈 #2: Gungun — 980 pts\n  🥉 #3: Ayush — 850 pts\n  #4: Vanshul — 720 pts\n  #5: Rahul — 610 pts\n\nHow to earn points:\n  • Complete Challenges on the Challenges page\n  • Each challenge has a pointsReward value\n  • Click any user on Leaderboard to view their public profile!`;
       }
 
-      // 7. What can you do / General website capabilities
-      else if (
-        lower.includes("what can you do") ||
-        lower.includes("kya kar sakte ho") ||
-        lower.includes("features") ||
-        lower.includes("help")
-      ) {
+      // 8. Regional Quests
+      else if (match("varanasi","ghat","lpu","lovely professional","campus","regional","quest","drive","assi","dashashwamedh")) {
         reply = isHinglish
-          ? `CarbonTrack AI Advisor capabilities:\n1. Daily carbon logging & Smart vehicle calculations\n2. Real-time footprint trend graphs & AI tips\n3. CSV Telemetry data export & PDF Carbon Offset Certificates\n4. LPU Campus & Varanasi regional quests & Leaderboard ranking\n5. Full Viva / Architecture Q&A guidance for project presentation!`
-          : `CarbonTrack AI Capabilities:\n1. Daily carbon logging & Smart vehicle multiplier engine\n2. Live trend graphs & real-world equivalent insights\n3. CSV Telemetry data export & 1-Click PDF Carbon Certificates\n4. LPU Campus & Varanasi regional drives with global leaderboard\n5. Complete Architecture & Viva Q&A assistance!`;
+          ? `Regional & Campus Quests 🚩\n\nVaranasi Ghats:\n  • Assi Ghat & Dashashwamedh Ghat pe zero-plastic patrol\n  • Terracotta kulhad ka use promote karna\n  • Ganga cleanup drive participation\n\nLPU Campus:\n  • UniMall se Block 34 tak walking challenge\n  • Hostel room AC energy saver drive\n  • Campus cycling initiative\n\nChallenges page par jao aur in quests ko accept karo — Eco Points direct milenge!`
+          : `Regional & Campus Quests 🚩\n\nVaranasi Ghats:\n  • Zero-plastic patrols near Assi & Dashashwamedh Ghats\n  • Promoting terracotta kulhad usage along the ghats\n  • Ganga river cleanup drive participation\n\nLPU Campus:\n  • Walking challenge: UniMall to Block 34\n  • Hostel room AC energy saver drive\n  • Campus cycling initiative\n\nGo to the Challenges page to accept these quests and earn Eco Points!`;
       }
 
-      // Fallback response
+      // 9. What can you do / capabilities / features
+      else if (match("what can","kya kar sakte","feature","help","capabilities","kya kya","what do you","kya hain","apna kaam","kya karta hai","tumhara kaam","tera kaam","aapka kaam","your job","your work","about you","tum kaun","tu kaun","aap kaun","who are you","kaun ho")) {
+        reply = isHinglish
+          ? `Main EcoBot AI hoon — CarbonTrack ka Multilingual Advisor! 🤖\n\nMain ye sab kar sakta hoon:\n  1. Aapka Carbon Footprint summary dena (real data)\n  2. CO2 calculation formula samjhana\n  3. Platform Architecture & Tech Stack explain karna\n  4. Marketplace & Certificate workflow batana\n  5. Varanasi Ghats & LPU Campus quests ki info dena\n  6. Leaderboard rankings batana\n  7. Viva/project questions ke jawab dena\n  8. Hindi, Hinglish ya English — teeno mein baat karna!\n\nBas koi bhi sawaal puchho — main jawab dunga!`
+          : `I'm EcoBot AI — CarbonTrack's Multilingual Smart Advisor! 🤖\n\nHere's what I can do:\n  1. Give your real-time Carbon Footprint summary\n  2. Explain CO2 calculation formulas & vehicle factors\n  3. Walk you through Platform Architecture & Tech Stack\n  4. Explain Marketplace & Certificate workflow\n  5. Info on Varanasi Ghats & LPU Campus quests\n  6. Current Leaderboard rankings\n  7. Answer Viva/project presentation questions\n  8. Respond in Hindi, Hinglish, or English!\n\nJust ask me anything!`;
+      }
+
+      // 10. Dashboard / how to log
+      else if (match("dashboard","log kare","log karo","activity","kaise log","how to log","add activity","activity kaise","log activity","daily log")) {
+        reply = isHinglish
+          ? `Dashboard par Activity Log kaise karo 📋\n\n1. Dashboard page par jao.\n2. Left side mein Activity Form dikhega.\n3. Category chuno: Transport, Electricity, Food, Shopping, etc.\n4. Sub-type chuno (e.g. Petrol Car, AC, Chicken).\n5. Quantity bharo (km, kWh, kg — category ke hisaab se).\n6. "Log Activity" button dabaao.\n7. CO2 automatically calculate hoga aur graph update ho jaayega!\n\nJitna zyada log karoge, utna accurate aapka footprint dikhega.`
+          : `How to log activities on Dashboard 📋\n\n1. Go to the Dashboard page.\n2. Find the Activity Form on the left side.\n3. Select Category: Transport, Electricity, Food, Shopping, etc.\n4. Choose sub-type (e.g. Petrol Car, AC, Chicken).\n5. Enter Quantity (km / kWh / kg — depends on category).\n6. Click "Log Activity".\n7. CO2 is auto-calculated and graphs update instantly!\n\nThe more you log, the more accurate your footprint tracking!`;
+      }
+
+      // 11. Tips / suggestions
+      else if (match("tip","suggestion","reduce","bachao","save","improve","better","eco","green","planet","help","kya karu","kya karna","advice")) {
+        reply = isHinglish
+          ? `Top Eco Tips 🌿\n\n1. Petrol car ki jagah EV ya cycling use karo — 70% emissions save!\n2. AC 1°C badhaao → 6% electricity save hoti hai.\n3. Meat consumption kam karo — 1 kg beef = 27 kg CO2!\n4. Carpooling 2 din/week = ~8.5 kg CO2 save per month.\n5. LED bulbs use karo — 75% less electricity.\n6. Short flights ki jagah train lo — 90% kam emissions!\n7. Reusable bags & bottles use karo.\n\nChallenges page par in tips se related quests bhi hain!`
+          : `Top Eco Tips for Reducing Your Carbon Footprint 🌿\n\n1. Switch to EV or cycling — saves 70% emissions vs petrol!\n2. Raise AC by 1°C → saves 6% electricity.\n3. Reduce meat — 1 kg beef = 27 kg CO2!\n4. Carpool 2 days/week = ~8.5 kg CO2 saved per month.\n5. Use LED bulbs — 75% less electricity than incandescent.\n6. Take trains over short flights — 90% fewer emissions!\n7. Always use reusable bags & bottles.\n\nFind related eco challenges on the Challenges page!`;
+      }
+
+      // Fallback — smart, not "query logged"
       else {
-        reply = isHinglish
-          ? `${userName}, main aapki madad ke liye tayyar hu! Aap mujhse Website Architecture, CO2 Calculation Formula, PDF Certificates, ya Viva Q&A ke baare me puchh sakte ho.`
-          : `${userName}, I am standing by to assist! Ask me about Platform Architecture, CO2 Calculation Formulas, Offset Certificates, or Viva Q&A.`;
-
-        if (isAdmin) {
-          reply = `Super Admin ${userName}, your query "${query}" has been logged into the console. Standing by for your commands, Boss!`;
+        if (isHinglish) {
+          reply = `${userName}, samjha! Lekin mujhe apni capabilities ke andar jawab dena hota hai. 😊\n\nAap mujhse ye puchh sakte ho:\n  • "Kaise kaam karta hai ye platform?"\n  • "Mera CO2 kitna hai?"\n  • "CO2 formula kya hai?"\n  • "Architecture explain karo"\n  • "Leaderboard mein kaun top par hai?"\n  • "Certificate kaise download hoga?"\n  • "Eco tips batao"\n\nKoi bhi topic choose karo!`;
+        } else {
+          reply = `Got it, ${userName}! Let me help you better. Here's what I can answer:\n\n  • "How does this platform work?"\n  • "What is my current CO2 footprint?"\n  • "Explain the CO2 calculation formula"\n  • "Tell me about the architecture"\n  • "Who is on top of the leaderboard?"\n  • "How do I download a certificate?"\n  • "Give me eco tips"\n\nJust pick any topic and ask!`;
         }
       }
 
       setMessages((prev) => [...prev, { sender: "bot", text: reply }]);
-    }, 400);
+    }, 350);
   };
+
 
   if (!user) return null;
 
