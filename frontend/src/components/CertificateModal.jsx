@@ -286,8 +286,15 @@ const CertificateModal = ({ isOpen, onClose, orderData = {}, user }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-[#080C14] border border-emerald-500/40 rounded-3xl p-6 sm:p-8 text-white shadow-[0_20px_60px_rgba(0,0,0,0.8)] space-y-6">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-2xl bg-[#080C14] border border-emerald-500/40 rounded-3xl p-6 sm:p-8 text-white shadow-[0_20px_60px_rgba(0,0,0,0.8)] space-y-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+
 
         <div className="flex justify-between items-center border-b border-slate-800 pb-4">
           <div className="flex items-center gap-2">
