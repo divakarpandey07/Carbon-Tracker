@@ -1,38 +1,49 @@
 import { useRef } from "react";
 
-const CertificateModal = ({ isOpen, onClose, orderData, user }) => {
+const CertificateModal = ({ isOpen, onClose, orderData = {}, user }) => {
   const certificateRef = useRef(null);
 
-  if (!isOpen || !orderData) return null;
+  if (!isOpen) return null;
+
+  const projectTitle = orderData.listing?.title || "Verified Reforestation & Regional Clean Drive";
+  const amountOffeset = orderData.quantity || orderData.totalAmount || 50;
+  const transactionRef = orderData.transactionRef || `CT-${Math.floor(100000 + Math.random() * 900000)}`;
+  const issueDate = new Date(orderData.createdAt || Date.now()).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   const handlePrint = () => {
     const printContent = certificateRef.current;
-    const windowUrl = "about:blank";
-    const uniqueName = new Date().getTime();
-    const printWindow = window.open(
-      windowUrl,
-      name,
-      `left=50,top=50,width=800,height=600,toolbar=0,scrollbars=1,status=0`
-    );
+    const printWindow = window.open("about:blank", "_blank", "width=850,height=650");
 
     printWindow.document.write(`
       <html>
         <head>
-          <title>Carbon Offset Certificate - ${orderData.transactionRef || "CarbonTrack"}</title>
+          <title>Carbon Offset Certificate - ${transactionRef}</title>
           <style>
-            body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #fff; color: #0f172a; margin: 0; padding: 40px; }
-            .cert-border { border: 12px double #10b981; padding: 40px; border-radius: 20px; text-align: center; position: relative; background: #fafdfb; }
-            .badge { background: #10b981; color: #fff; font-size: 12px; font-weight: bold; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; display: inline-block; margin-bottom: 20px; }
-            h1 { font-size: 32px; color: #065f46; margin: 10px 0; }
-            h2 { font-size: 24px; color: #0f172a; margin: 20px 0; font-weight: bold; }
-            p { font-size: 14px; color: #475569; line-height: 1.6; }
-            .highlight { font-size: 28px; font-weight: 900; color: #059669; margin: 15px 0; }
-            .footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 2px solid #e2e8f0; padding-top: 20px; text-align: left; }
-            .qr-placeholder { width: 80px; height: 80px; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; border-radius: 10px; }
+            @media print {
+              body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            }
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #060a12; color: #f8fafc; margin: 0; padding: 40px; }
+            .cert-box { border: 4px solid #10b981; border-radius: 24px; padding: 40px; background: linear-gradient(135deg, #090e1a 0%, #0b1526 100%); text-align: center; box-shadow: 0 0 40px rgba(16,185,129,0.3); }
+            .badge { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid #10b981; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding: 6px 18px; border-radius: 20px; display: inline-block; }
+            h1 { font-size: 28px; color: #ffffff; margin: 20px 0 10px 0; letter-spacing: 1px; }
+            .user-name { font-size: 32px; font-weight: 900; color: #34d399; margin: 15px 0; text-transform: uppercase; }
+            p { font-size: 13px; color: #94a3b8; line-height: 1.6; }
+            .amount-box { background: #040810; border: 1px solid #10b981; border-radius: 16px; padding: 16px; margin: 24px 0; }
+            .amount-num { font-size: 36px; font-weight: 900; color: #10b981; margin: 0; }
+            .details-grid { text-align: left; background: #0a111e; border: 1px solid #1e293b; border-radius: 14px; padding: 16px; margin-bottom: 24px; font-size: 12px; }
+            .details-grid p { margin: 6px 0; color: #cbd5e1; }
+            .footer { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid #1e293b; padding-top: 20px; text-align: left; }
+            .seal { border: 2px solid #10b981; color: #34d399; width: 75px; height: 75px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; text-align: center; }
           </style>
         </head>
         <body>
-          ${printContent.innerHTML}
+          <div class="cert-box">
+            ${printContent.innerHTML}
+          </div>
         </body>
       </html>
     `);
@@ -41,60 +52,70 @@ const CertificateModal = ({ isOpen, onClose, orderData, user }) => {
     setTimeout(() => {
       printWindow.print();
       printWindow.close();
-    }, 250);
+    }, 300);
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-slate-900 border border-emerald-500/30 rounded-3xl p-6 sm:p-8 text-white shadow-2xl space-y-6">
+      <div className="relative w-full max-w-2xl bg-[#080C14] border border-emerald-500/40 rounded-3xl p-6 sm:p-8 text-white shadow-[0_20px_60px_rgba(0,0,0,0.8)] space-y-6">
         <div className="flex justify-between items-center border-b border-slate-800 pb-4">
           <div className="flex items-center gap-2">
-            <span className="text-xl">📜</span>
-            <h3 className="text-lg font-black text-white">Carbon Offset Certificate</h3>
+            <span className="text-2xl">📜</span>
+            <div>
+              <h3 className="text-lg font-black text-white">Verified Carbon Offset Certificate</h3>
+              <p className="text-[11px] text-emerald-400 font-semibold">Midnight Obsidian Theme • Official Standard</p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold"
+            className="w-8 h-8 rounded-full bg-slate-900 border border-slate-700 text-slate-400 hover:text-white flex items-center justify-center font-bold"
           >
             ✕
           </button>
         </div>
 
-        {/* Printable Certificate Template */}
-        <div ref={certificateRef} className="bg-slate-950 border-8 double border-emerald-500/40 rounded-2xl p-6 sm:p-8 text-center space-y-4">
-          <span className="inline-block bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full">
-            Official Verification Standard
+        {/* Midnight Obsidian Luxury Certificate */}
+        <div ref={certificateRef} className="rounded-2xl bg-gradient-to-br from-[#0A111E] via-slate-950 to-[#080C14] border-2 border-emerald-500/40 p-6 sm:p-8 text-center space-y-4 shadow-[0_0_40px_rgba(16,185,129,0.15)] relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+          <span className="inline-block bg-emerald-500/15 text-emerald-300 border border-emerald-400/40 text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+            Verified UN SDG Compliance Registry
           </span>
 
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            CERTIFICATE OF CARBON OFFSET
+            CERTIFICATE OF CARBON NEUTRALITY
           </h1>
 
-          <p className="text-xs text-slate-400 uppercase tracking-widest">Presented to</p>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-emerald-400">{user?.name || "Valued Sustainability Member"}</h2>
+          <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold">Proudly Presented To</p>
+          <h2 className="text-2xl sm:text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 tracking-tight">
+            {user?.name || "Valued Sustainability Advocate"}
+          </h2>
 
-          <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
-            For successfully purchasing and neutralizing environmental impact through certified green offset projects.
+          <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed font-medium">
+            In recognition of active environmental stewardship and verified greenhouse gas emission reduction.
           </p>
 
-          <div className="my-4 py-3 bg-slate-900 rounded-xl border border-slate-800">
-            <p className="text-2xl sm:text-3xl font-black text-emerald-400">{orderData.quantity || orderData.totalAmount || 50} kg CO2e</p>
-            <p className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Total Carbon Offset Amount</p>
+          <div className="my-4 py-4 rounded-2xl bg-slate-950 border border-emerald-500/30 text-center shadow-lg">
+            <p className="text-3xl sm:text-4xl font-black text-emerald-400">{amountOffeset} <span className="text-sm font-semibold text-slate-300">kg CO2e</span></p>
+            <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1">Total Verified Carbon Offset</p>
           </div>
 
-          <div className="text-left text-xs text-slate-400 space-y-1 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-            <p><strong className="text-slate-200">Project Title:</strong> {orderData.listing?.title || "Verified Regional Reforestation Initiative"}</p>
-            <p><strong className="text-slate-200">Transaction Ref:</strong> {orderData.transactionRef || `CT-${Math.floor(100000 + Math.random() * 900000)}`}</p>
-            <p><strong className="text-slate-200">Issue Date:</strong> {new Date(orderData.createdAt || Date.now()).toLocaleDateString()}</p>
+          <div className="text-left text-xs text-slate-300 space-y-1.5 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+            <p><strong className="text-slate-400">Project Initiative:</strong> <span className="text-white font-semibold">{projectTitle}</span></p>
+            <p><strong className="text-slate-400">Transaction Reference:</strong> <span className="text-emerald-400 font-mono font-bold">{transactionRef}</span></p>
+            <p><strong className="text-slate-400">Date of Issue:</strong> <span className="text-white">{issueDate}</span></p>
+            <p><strong className="text-slate-400">Issuing Registry:</strong> <span className="text-teal-400 font-bold">CarbonTrack Global Telemetry Network</span></p>
           </div>
 
-          <div className="pt-4 flex justify-between items-center text-[10px] text-slate-500 border-t border-slate-800">
-            <div>
-              <p className="font-bold text-slate-300">CarbonTrack Platform</p>
-              <p>Verified ESG Registry • UN SDG Compliant</p>
+          <div className="pt-4 flex justify-between items-end border-t border-slate-800">
+            <div className="text-left">
+              <p className="text-xs font-bold text-white">CarbonTrack Platform</p>
+              <p className="text-[10px] text-slate-500">Official ESG Certificate • Verified Registry</p>
             </div>
-            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-center text-emerald-400 font-bold text-[9px] text-center p-1">
-              ✓ VERIFIED SEAL
+
+            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border-2 border-emerald-400/50 flex flex-col items-center justify-center text-emerald-400 font-black text-[9px] text-center p-1 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+              <span>✓ VERIFIED</span>
+              <span className="text-[7px] text-emerald-300">SEAL</span>
             </div>
           </div>
         </div>
@@ -102,15 +123,15 @@ const CertificateModal = ({ isOpen, onClose, orderData, user }) => {
         <div className="flex justify-end gap-3 pt-2">
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-2xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 transition"
+            className="px-5 py-2.5 rounded-2xl bg-slate-900 border border-slate-700 text-slate-300 text-xs font-bold hover:bg-slate-800 transition"
           >
             Close
           </button>
           <button
             onClick={handlePrint}
-            className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs hover:scale-[1.02] transition shadow-lg shadow-emerald-500/20"
+            className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs hover:scale-[1.02] transition shadow-lg shadow-emerald-500/20"
           >
-            🖨️ Print / Save PDF
+            🖨️ Print / Save PDF Certificate
           </button>
         </div>
       </div>

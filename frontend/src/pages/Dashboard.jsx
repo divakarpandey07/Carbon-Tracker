@@ -8,12 +8,14 @@ import FootprintSummary from "../components/FootprintSummary";
 import FootprintTrendChart from "../components/FootprintTrendChart";
 import EcoInsights from "../components/EcoInsights";
 import SavingsCalculator from "../components/SavingsCalculator";
+import CertificateModal from "../components/CertificateModal";
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [showCertModal, setShowCertModal] = useState(false);
 
   const fetchActivities = async () => {
     try {
@@ -64,17 +66,27 @@ const Dashboard = () => {
               </p>
             </div>
 
-            {/* Glowing Stat Pills */}
-            <div className="flex flex-wrap sm:flex-nowrap gap-3">
-              <div className="flex-1 min-w-[140px] rounded-2xl bg-slate-950/60 backdrop-blur-md border border-emerald-500/20 p-4 text-center">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Account Role</p>
-                <p className="mt-1 text-base font-extrabold text-emerald-400 capitalize">{user?.role || "User"}</p>
+            {/* Glowing Stat Pills & Certificate Trigger */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex gap-3">
+                <div className="flex-1 min-w-[120px] rounded-2xl bg-slate-950/60 backdrop-blur-md border border-emerald-500/20 p-4 text-center">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Account Role</p>
+                  <p className="mt-1 text-base font-extrabold text-emerald-400 capitalize">{user?.role || "User"}</p>
+                </div>
+
+                <div className="flex-1 min-w-[120px] rounded-2xl bg-slate-950/60 backdrop-blur-md border border-emerald-500/20 p-4 text-center">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Logs</p>
+                  <p className="mt-1 text-2xl font-black text-white">{activities.length}</p>
+                </div>
               </div>
 
-              <div className="flex-1 min-w-[140px] rounded-2xl bg-slate-950/60 backdrop-blur-md border border-emerald-500/20 p-4 text-center">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Logs</p>
-                <p className="mt-1 text-2xl font-black text-white">{activities.length}</p>
-              </div>
+              <button
+                onClick={() => setShowCertModal(true)}
+                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs hover:scale-105 transition shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2"
+              >
+                <span>📜</span>
+                <span>Generate Verified Certificate</span>
+              </button>
             </div>
           </div>
         </div>
@@ -110,6 +122,16 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Certificate Modal */}
+      {showCertModal && (
+        <CertificateModal
+          isOpen={showCertModal}
+          onClose={() => setShowCertModal(false)}
+          orderData={{ quantity: 50, transactionRef: `CT-DB-${Math.floor(100000 + Math.random() * 900000)}` }}
+          user={user}
+        />
+      )}
     </div>
   );
 };
