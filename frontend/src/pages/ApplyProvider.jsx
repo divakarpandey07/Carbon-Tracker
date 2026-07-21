@@ -26,7 +26,7 @@ const ApplyProvider = () => {
     setLoading(true);
     try {
       await api.post("/verification/apply", form);
-      setSuccess("Application submitted! An admin will review it soon.");
+      setSuccess("Application submitted successfully! An admin will review your registration.");
       setTimeout(() => navigate("/dashboard"), 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to submit application");
@@ -37,17 +37,18 @@ const ApplyProvider = () => {
 
   if (user?.role !== "user") {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
         <Navbar />
-        <div className="flex items-center justify-center p-6">
-          <div className="bg-white rounded-lg shadow p-6 text-center">
-            <p className="text-gray-600">
+        <div className="flex items-center justify-center p-8">
+          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-8 text-center max-w-md w-full shadow-2xl">
+            <span className="text-4xl mb-3 block">ℹ️</span>
+            <p className="text-slate-300 text-sm">
               {user?.role === "provider"
-                ? "You are already a provider."
-                : "This page is only for regular users."}
+                ? "You are already a verified offset provider."
+                : "This verification page is reserved for user accounts."}
             </p>
-            <Link to="/dashboard" className="text-green-600 font-medium mt-3 inline-block">
-              Back to Dashboard
+            <Link to="/dashboard" className="text-emerald-400 font-bold text-xs mt-4 inline-block hover:underline">
+              ← Back to Dashboard
             </Link>
           </div>
         </div>
@@ -56,59 +57,80 @@ const ApplyProvider = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
-      <div className="flex items-center justify-center p-6">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <h2 className="text-2xl font-bold mb-2 text-green-700">Become an Offset Provider</h2>
-          <p className="text-sm text-gray-500 mb-6">
-            Apply to list and sell verified carbon offsets on our marketplace.
-          </p>
+      <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-8 shadow-2xl space-y-6">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
+              Provider Onboarding
+            </span>
+            <h2 className="text-2xl font-bold text-white tracking-tight mt-3">Become an Offset Provider 🌿</h2>
+            <p className="text-xs text-slate-400 mt-1">
+              Apply to list certified carbon offset projects on our global marketplace.
+            </p>
+          </div>
 
-          {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">{error}</div>}
-          {success && <div className="bg-green-100 text-green-700 p-3 rounded mb-4 text-sm">{success}</div>}
+          {error && <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3.5 rounded-2xl text-xs">{error}</div>}
+          {success && <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 p-3.5 rounded-2xl text-xs">{success}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              name="organizationName"
-              placeholder="Organization Name"
-              value={form.organizationName}
-              onChange={handleChange}
-              required
-              className="w-full border rounded px-3 py-2"
-            />
-            <input
-              type="text"
-              name="registrationNumber"
-              placeholder="Registration Number (optional)"
-              value={form.registrationNumber}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-            />
-            <input
-              type="text"
-              name="website"
-              placeholder="Website (optional)"
-              value={form.website}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-            />
-            <textarea
-              name="description"
-              placeholder="Describe your organization and offset projects"
-              value={form.description}
-              onChange={handleChange}
-              required
-              rows={4}
-              className="w-full border rounded px-3 py-2"
-            />
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Organization Name</label>
+              <input
+                type="text"
+                name="organizationName"
+                placeholder="e.g. Himalayan Reforestation Initiative"
+                value={form.organizationName}
+                onChange={handleChange}
+                required
+                className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Registration Number (Optional)</label>
+              <input
+                type="text"
+                name="registrationNumber"
+                placeholder="e.g. REG-2026-8849"
+                value={form.registrationNumber}
+                onChange={handleChange}
+                className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Website URL (Optional)</label>
+              <input
+                type="text"
+                name="website"
+                placeholder="https://example.org"
+                value={form.website}
+                onChange={handleChange}
+                className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Project Description</label>
+              <textarea
+                name="description"
+                placeholder="Describe your environmental projects, locations, and carbon offset methodology..."
+                value={form.description}
+                onChange={handleChange}
+                required
+                rows={4}
+                className="w-full rounded-2xl border border-slate-700 bg-slate-950 p-4 text-xs text-slate-100 outline-none focus:border-emerald-500"
+              />
+            </div>
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition disabled:opacity-50"
+              className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 py-3 text-xs font-bold text-slate-950 shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-400 transition disabled:opacity-50"
             >
-              {loading ? "Submitting..." : "Submit Application"}
+              {loading ? "Submitting Application..." : "Submit Verification Request"}
             </button>
           </form>
         </div>

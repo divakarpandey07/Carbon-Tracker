@@ -47,69 +47,94 @@ const Marketplace = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
-      <div className="max-w-5xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-green-700">Carbon Offset Marketplace</h1>
-          {user?.role === "provider" && (
-            <span className="text-sm text-gray-500">You can manage listings via API/admin tools</span>
-          )}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Header Hero Banner */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
+                Verified Carbon Offsets
+              </span>
+              <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
+                Carbon Offset Marketplace 🛍️
+              </h1>
+              <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl">
+                Purchase verified carbon offset credits from certified reforestation, solar power, and methane capture projects to neutralize your footprint.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <form onSubmit={handleSearch} className="bg-white rounded-lg shadow p-4 mb-6 flex gap-3">
+        {/* Search & Filter Bar */}
+        <form onSubmit={handleSearch} className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 shadow-xl flex flex-col sm:flex-row gap-3">
           <input
             type="text"
-            placeholder="Search offsets..."
+            placeholder="Search offset projects..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 border rounded px-3 py-2"
+            className="flex-1 rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500"
           />
           <select
             value={offsetType}
             onChange={(e) => setOffsetType(e.target.value)}
-            className="border rounded px-3 py-2"
+            className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-xs text-slate-100 outline-none focus:border-emerald-500"
           >
-            <option value="">All Types</option>
+            <option value="">All Offset Categories</option>
             {Object.entries(offsetTypeLabels).map(([value, label]) => (
               <option key={value} value={value}>{label}</option>
             ))}
           </select>
-          <button type="submit" className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700">
-            Search
+          <button
+            type="submit"
+            className="rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-2.5 text-xs font-bold text-slate-950 shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-400 transition"
+          >
+            Search Projects
           </button>
         </form>
 
         {loading ? (
-          <div className="text-center text-gray-500 py-6">Loading listings...</div>
+          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+            Loading offset projects...
+          </div>
         ) : listings.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
-            No listings found. Try a different search.
+          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+            No projects found matching your search.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {listings.map((l) => (
-              <div key={l._id} className="bg-white rounded-lg shadow p-5 flex flex-col">
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded self-start mb-2">
-                  {offsetTypeLabels[l.offsetType] || l.offsetType}
-                </span>
-                <h3 className="font-semibold text-gray-800 mb-1">{l.title}</h3>
-                <p className="text-sm text-gray-600 mb-3 flex-1">{l.description}</p>
-                <p className="text-xs text-gray-400 mb-2">
-                  By {l.provider?.name} {l.location && `• ${l.location}`}
-                </p>
-                <div className="flex justify-between items-center mt-auto">
-                  <p className="font-bold text-green-700">
-                    ${l.pricePerUnit} <span className="text-xs font-normal text-gray-500">/kg CO2</span>
+              <div key={l._id} className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl p-6 flex flex-col justify-between space-y-4 hover:border-emerald-500/30 transition-all">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2.5 py-1 rounded-full inline-block mb-3">
+                    {offsetTypeLabels[l.offsetType] || l.offsetType}
+                  </span>
+                  <h3 className="font-bold text-white text-lg mb-2">{l.title}</h3>
+                  <p className="text-xs text-slate-400 leading-relaxed mb-4">{l.description}</p>
+                  <p className="text-[11px] text-slate-500 font-medium">
+                    By <span className="text-slate-300">{l.provider?.name}</span> {l.location && `• 📍 ${l.location}`}
                   </p>
-                  <p className="text-xs text-gray-400">{l.availableQuantity} kg left</p>
                 </div>
-                <button
-                  onClick={() => navigate(`/marketplace/${l._id}`)}
-                  className="mt-3 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 text-sm"
-                >
-                  View & Buy
-                </button>
+
+                <div className="pt-4 border-t border-slate-800 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Price per kg</p>
+                      <p className="text-xl font-extrabold text-emerald-400">${l.pricePerUnit} <span className="text-xs font-normal text-slate-400">/kg CO2</span></p>
+                    </div>
+                    <span className="text-xs font-semibold bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">
+                      {l.availableQuantity} kg available
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => navigate(`/marketplace/${l._id}`)}
+                    className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold py-2.5 text-xs hover:from-emerald-400 hover:to-teal-400 transition shadow-lg shadow-emerald-500/10"
+                  >
+                    View & Purchase Offset
+                  </button>
+                </div>
               </div>
             ))}
           </div>

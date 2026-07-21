@@ -3,6 +3,22 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import api from "../utils/api";
 import Navbar from "../components/Navbar";
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-xl bg-slate-950/90 border border-slate-800 p-3 shadow-2xl backdrop-blur-md">
+        <p className="text-xs font-semibold text-slate-400 mb-1">{label}</p>
+        {payload.map((entry, index) => (
+          <p key={index} className="text-xs font-bold" style={{ color: entry.color }}>
+            {entry.name}: {entry.value} kg CO2
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
 const Analytics = () => {
   const [overview, setOverview] = useState(null);
   const [comparison, setComparison] = useState(null);
@@ -53,102 +69,138 @@ const Analytics = () => {
     electricity: "#eab308",
     water: "#06b6d4",
     gas: "#a855f7",
-    waste: "#6b7280",
+    waste: "#10b981",
     other: "#ec4899",
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
         <Navbar />
-        <div className="p-6 text-center text-gray-500">Loading analytics...</div>
+        <div className="max-w-4xl mx-auto p-8 text-center text-slate-400">Loading analytics...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-2xl font-bold text-green-700 mb-6">Analytics Dashboard</h1>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow p-4 text-center">
-            <p className="text-2xl font-bold text-green-700">{overview?.totalFootprintCO2 ?? 0}</p>
-            <p className="text-xs text-gray-500">Total kg CO2</p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-4 text-center">
-            <p className="text-2xl font-bold text-blue-600">{overview?.totalOffsetsPurchased ?? 0}</p>
-            <p className="text-xs text-gray-500">Offsets Bought (kg)</p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-4 text-center">
-            <p className="text-2xl font-bold text-yellow-600">{overview?.challengesCompleted ?? 0}</p>
-            <p className="text-xs text-gray-500">Challenges Won</p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-4 text-center">
-            <p className="text-2xl font-bold text-purple-600">{streaks?.currentStreak ?? 0}</p>
-            <p className="text-xs text-gray-500">Day Streak 🔥</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Header Hero Banner */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+          <div className="relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
+              Advanced Insights
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
+              Analytics & Net Impact 📊
+            </h1>
+            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl">
+              Deep dive into category-wise monthly breakdowns, platform comparisons, net carbon neutrality score, and logging streaks.
+            </p>
           </div>
         </div>
 
-        {netImpact && (
-          <div className="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">Net Carbon Impact</h2>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">Emitted</span>
-              <span className="font-medium">{netImpact.totalEmitted} kg</span>
-            </div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">Offset</span>
-              <span className="font-medium">{netImpact.totalOffset} kg</span>
-            </div>
-            <div className="flex items-center justify-between border-t pt-2">
-              <span className="font-semibold">Net Impact</span>
-              <span className={`font-bold ${netImpact.netImpact <= 0 ? "text-green-600" : "text-red-500"}`}>
-                {netImpact.netImpact} kg {netImpact.netImpact <= 0 ? "🌱 Carbon Neutral+" : "⚠️"}
-              </span>
-            </div>
+        {/* Overview Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-5 text-center shadow-xl">
+            <p className="text-3xl font-black text-emerald-400">{overview?.totalFootprintCO2 ?? 0}</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Total kg CO2 Emitted</p>
           </div>
-        )}
-
-        {comparison && (
-          <div className="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">You vs Platform Average</h2>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">Your Footprint</span>
-              <span className="font-medium">{comparison.yourFootprint} kg</span>
-            </div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">Platform Average</span>
-              <span className="font-medium">{comparison.platformAverage} kg</span>
-            </div>
-            <p className={`text-sm font-medium mt-2 ${comparison.comparedToPlatform === "below_average" ? "text-green-600" : "text-orange-500"}`}>
-              {comparison.comparedToPlatform === "below_average"
-                ? "🎉 You're below average!"
-                : comparison.comparedToPlatform === "above_average"
-                ? "You're above average — room to improve"
-                : "Not enough data yet"}
-            </p>
+          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-5 text-center shadow-xl">
+            <p className="text-3xl font-black text-teal-400">{overview?.totalOffsetsPurchased ?? 0}</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Offsets Bought (kg)</p>
           </div>
-        )}
+          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-5 text-center shadow-xl">
+            <p className="text-3xl font-black text-amber-400">{overview?.challengesCompleted ?? 0}</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Quests Won</p>
+          </div>
+          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-5 text-center shadow-xl">
+            <p className="text-3xl font-black text-purple-400">{streaks?.currentStreak ?? 0}</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Day Streak 🔥</p>
+          </div>
+        </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Emissions by Category (Monthly)</h2>
+        {/* Net Impact & Platform Comparison */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {netImpact && (
+            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 shadow-xl space-y-4">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Balance Sheet</span>
+                <h2 className="text-xl font-bold text-white tracking-tight">Net Carbon Impact</h2>
+              </div>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between text-slate-300">
+                  <span>Gross CO2 Emitted</span>
+                  <span className="font-bold text-red-400">{netImpact.totalEmitted} kg</span>
+                </div>
+                <div className="flex justify-between text-slate-300">
+                  <span>Gross CO2 Offsetted</span>
+                  <span className="font-bold text-emerald-400">{netImpact.totalOffset} kg</span>
+                </div>
+                <div className="flex justify-between border-t border-slate-800 pt-3 text-sm font-bold">
+                  <span className="text-white">Net Carbon Score</span>
+                  <span className={netImpact.netImpact <= 0 ? "text-emerald-400" : "text-amber-400"}>
+                    {netImpact.netImpact} kg {netImpact.netImpact <= 0 ? "🌱 Carbon Neutral+" : "⚠️ Positive Emission"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {comparison && (
+            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 shadow-xl space-y-4">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-teal-400">Benchmarking</span>
+                <h2 className="text-xl font-bold text-white tracking-tight">You vs Platform Average</h2>
+              </div>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between text-slate-300">
+                  <span>Your Footprint</span>
+                  <span className="font-bold text-white">{comparison.yourFootprint} kg</span>
+                </div>
+                <div className="flex justify-between text-slate-300">
+                  <span>Community Average</span>
+                  <span className="font-bold text-slate-400">{comparison.platformAverage} kg</span>
+                </div>
+                <div className="pt-2 border-t border-slate-800">
+                  <p className={`text-xs font-bold ${comparison.comparedToPlatform === "below_average" ? "text-emerald-400" : "text-amber-400"}`}>
+                    {comparison.comparedToPlatform === "below_average"
+                      ? "🎉 Excellent! Your footprint is lower than the community average."
+                      : comparison.comparedToPlatform === "above_average"
+                      ? "⚡ You are slightly above community average. Explore challenges to reduce!"
+                      : "Keep logging to unlock benchmarks."}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Monthly Bar Chart */}
+        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 shadow-xl">
+          <div className="mb-6">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Monthly Stacked Graph</span>
+            <h2 className="text-xl font-bold text-white tracking-tight">Emissions by Category</h2>
+          </div>
+
           {categoryTrends.length === 0 ? (
-            <p className="text-center text-gray-500 py-6">Not enough data yet.</p>
+            <p className="text-center text-slate-500 py-8 text-xs">Not enough monthly data recorded yet.</p>
           ) : (
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={categoryTrends}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="period" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Legend />
-                {Object.keys(categoryColors).map((cat) => (
-                  <Bar key={cat} dataKey={cat} stackId="a" fill={categoryColors[cat]} />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="w-full h-[320px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={categoryTrends}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.5} />
+                  <XAxis dataKey="period" tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                  <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend wrapperStyle={{ fontSize: 11, color: "#cbd5e1" }} />
+                  {Object.keys(categoryColors).map((cat) => (
+                    <Bar key={cat} dataKey={cat} stackId="a" fill={categoryColors[cat]} />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           )}
         </div>
       </div>

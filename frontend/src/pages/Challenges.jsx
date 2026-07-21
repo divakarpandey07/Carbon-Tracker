@@ -46,7 +46,7 @@ const Challenges = () => {
     setMessage("");
     try {
       await api.post(`/challenges/${id}/join`);
-      setMessage("Joined successfully! Track your progress in My Active Challenges below.");
+      setMessage("Joined challenge successfully! Track your progress in My Active Challenges below.");
       await loadAllData();
     } catch (err) {
       setMessage(err.response?.data?.message || "Failed to join");
@@ -76,30 +76,51 @@ const Challenges = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-3xl font-bold text-green-800 mb-6">Carbon Reduction Challenges</h1>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Header Hero Banner */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+          <div className="relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
+              Community & Regional Quests
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
+              Carbon Reduction Challenges ⚡
+            </h1>
+            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-2xl">
+              Participate in localized eco-drives — from LPU campus green commutes to Varanasi Ghats zero-plastic initiatives. Earn impact points and boost your leaderboard standing!
+            </p>
+          </div>
+        </div>
 
         {message && (
-          <div className="bg-emerald-100 border border-emerald-300 text-emerald-800 p-4 rounded-xl mb-6 text-sm font-medium">
+          <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 p-4 rounded-2xl text-xs font-medium">
             {message}
           </div>
         )}
 
         {loading ? (
-          <div className="text-center text-gray-500 py-10">Loading challenges...</div>
+          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+            Loading challenges...
+          </div>
         ) : (
           <>
             {/* My Active Challenges Section */}
-            <div className="mb-10">
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span>🏆</span> My Active Challenges ({myChallenges.length})
-              </h2>
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">🏆</span>
+                  <h2 className="text-xl font-bold text-white tracking-tight">My Active Challenges</h2>
+                </div>
+                <span className="text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1 rounded-full">
+                  {myChallenges.length} Active
+                </span>
+              </div>
 
               {myChallenges.length === 0 ? (
-                <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-6 text-center text-gray-500 text-sm">
-                  You haven't joined any challenges yet. Browse available challenges below to get started!
+                <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 text-center text-slate-400 text-xs">
+                  You haven't joined any challenges yet. Explore available quests below!
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -111,37 +132,39 @@ const Challenges = () => {
                     return (
                       <div
                         key={item._id}
-                        className={`bg-white rounded-2xl border ${
-                          item.isCompleted ? "border-emerald-500 bg-emerald-50/20" : "border-gray-200"
-                        } shadow-sm p-5 flex flex-col justify-between`}
+                        className={`rounded-3xl bg-slate-900/90 border ${
+                          item.isCompleted ? "border-emerald-500/50 bg-emerald-950/20" : "border-slate-800"
+                        } shadow-xl p-6 flex flex-col justify-between space-y-4`}
                       >
                         <div>
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="font-semibold text-gray-900">{c.title}</h3>
+                          <div className="flex justify-between items-start gap-3 mb-2">
+                            <h3 className="font-bold text-white text-base">{c.title}</h3>
                             {item.isCompleted ? (
-                              <span className="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full">
+                              <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2.5 py-1 rounded-full shrink-0">
                                 ✓ Completed (+{item.pointsEarned} pts)
                               </span>
                             ) : (
-                              <span className="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-medium">
+                              <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-1 rounded-full shrink-0">
                                 In Progress
                               </span>
                             )}
                           </div>
-                          <p className="text-xs text-gray-600 mb-3">{c.description}</p>
+                          <p className="text-xs text-slate-400 leading-relaxed mb-3">{c.description}</p>
 
                           {/* Progress Bar */}
-                          <div className="mb-3">
-                            <div className="flex justify-between text-xs font-medium text-gray-700 mb-1">
-                              <span>Progress</span>
-                              <span>
+                          <div>
+                            <div className="flex justify-between text-xs font-semibold text-slate-300 mb-1.5">
+                              <span>Challenge Progress</span>
+                              <span className="text-emerald-400">
                                 {item.progressValue || 0} / {c.targetValue} ({percent}%)
                               </span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                            <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
                               <div
                                 className={`h-2.5 rounded-full transition-all duration-500 ${
-                                  item.isCompleted ? "bg-emerald-500" : "bg-green-600"
+                                  item.isCompleted
+                                    ? "bg-gradient-to-r from-emerald-500 to-teal-400"
+                                    : "bg-gradient-to-r from-emerald-600 to-teal-500"
                                 }`}
                                 style={{ width: `${percent}%` }}
                               ></div>
@@ -149,9 +172,8 @@ const Challenges = () => {
                           </div>
                         </div>
 
-                        {/* Log Progress Input if not completed */}
                         {!item.isCompleted && (
-                          <div className="mt-2 pt-3 border-t border-gray-100 flex gap-2">
+                          <div className="pt-3 border-t border-slate-800 flex gap-2">
                             <input
                               type="number"
                               placeholder="Add progress value"
@@ -159,14 +181,14 @@ const Challenges = () => {
                               onChange={(e) =>
                                 setProgressInput({ ...progressInput, [c._id]: e.target.value })
                               }
-                              className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-green-500"
+                              className="flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-100 outline-none focus:border-emerald-500"
                             />
                             <button
                               onClick={() => handleUpdateProgress(c._id, item.progressValue, c.targetValue)}
                               disabled={updatingId === c._id}
-                              className="bg-green-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-green-800 transition disabled:opacity-50"
+                              className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold px-3.5 py-1.5 text-xs hover:from-emerald-400 hover:to-teal-400 transition disabled:opacity-50"
                             >
-                              {updatingId === c._id ? "Saving..." : "Log Progress"}
+                              {updatingId === c._id ? "..." : "Log Progress"}
                             </button>
                           </div>
                         )}
@@ -179,56 +201,54 @@ const Challenges = () => {
 
             {/* All Available Challenges Section */}
             <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span>⚡</span> Available Challenges
-              </h2>
-
-              {challenges.length === 0 ? (
-                <div className="bg-white rounded-2xl shadow p-6 text-center text-gray-500">
-                  No active challenges right now. Check back later!
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">📍</span>
+                  <h2 className="text-xl font-bold text-white tracking-tight">Available Regional & Community Challenges</h2>
                 </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {challenges.map((c) => {
-                    const isAlreadyJoined = c.isJoined || myChallenges.some((m) => m.challenge?._id === c._id);
+                <span className="text-xs text-slate-400">{challenges.length} Available</span>
+              </div>
 
-                    return (
-                      <div key={c._id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col justify-between">
-                        <div>
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="font-semibold text-gray-900">{c.title}</h3>
-                            <span className="text-xs font-bold bg-green-100 text-green-800 px-2.5 py-1 rounded-full">
-                              +{c.pointsReward} pts
-                            </span>
-                          </div>
-                          <p className="text-xs text-gray-600 mb-3">{c.description}</p>
-                          <div className="text-xs text-gray-400 mb-4">
-                            🗓️ {new Date(c.startDate).toLocaleDateString()} → {new Date(c.endDate).toLocaleDateString()}
-                            {" • "}Target: {c.targetValue}
-                          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {challenges.map((c) => {
+                  const isAlreadyJoined = c.isJoined || myChallenges.some((m) => m.challenge?._id === c._id);
+
+                  return (
+                    <div key={c._id} className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl p-6 flex flex-col justify-between space-y-4">
+                      <div>
+                        <div className="flex justify-between items-start gap-3 mb-2">
+                          <h3 className="font-bold text-white text-base">{c.title}</h3>
+                          <span className="text-xs font-extrabold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1 rounded-full shrink-0">
+                            +{c.pointsReward} pts
+                          </span>
                         </div>
-
-                        {isAlreadyJoined ? (
-                          <button
-                            disabled
-                            className="w-full bg-emerald-50 text-emerald-700 font-semibold py-2.5 rounded-xl border border-emerald-200 text-xs flex items-center justify-center gap-1 cursor-not-allowed opacity-90"
-                          >
-                            <span>✓</span> Already Joined
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleJoin(c._id)}
-                            disabled={joiningId === c._id}
-                            className="w-full bg-green-700 text-white font-semibold py-2.5 rounded-xl hover:bg-green-800 transition disabled:opacity-50 text-xs shadow-sm"
-                          >
-                            {joiningId === c._id ? "Joining..." : "Join Challenge"}
-                          </button>
-                        )}
+                        <p className="text-xs text-slate-400 leading-relaxed mb-3">{c.description}</p>
+                        <div className="text-[11px] text-slate-500 font-medium">
+                          🗓️ {new Date(c.startDate).toLocaleDateString()} → {new Date(c.endDate).toLocaleDateString()}
+                          {" • "}Target: {c.targetValue}
+                        </div>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+
+                      {isAlreadyJoined ? (
+                        <button
+                          disabled
+                          className="w-full rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 font-bold py-2.5 text-xs flex items-center justify-center gap-1 cursor-not-allowed opacity-90"
+                        >
+                          <span>✓</span> Already Joined
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleJoin(c._id)}
+                          disabled={joiningId === c._id}
+                          className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold py-2.5 text-xs hover:from-emerald-400 hover:to-teal-400 transition shadow-lg shadow-emerald-500/10 disabled:opacity-50"
+                        >
+                          {joiningId === c._id ? "Joining..." : "Join Challenge"}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </>
         )}

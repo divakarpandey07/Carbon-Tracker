@@ -49,53 +49,68 @@ const AdminVerification = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
-      <div className="max-w-3xl mx-auto p-6">
-        <h1 className="text-2xl font-bold text-green-700 mb-6">Provider Applications</h1>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Header Hero Banner */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+          <div className="relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
+              Verification Queue
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
+              Provider Applications 📝
+            </h1>
+            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl">
+              Review and verify corporate & offset provider registrations before granting marketplace publishing rights.
+            </p>
+          </div>
+        </div>
 
         {loading ? (
-          <div className="text-center text-gray-500 py-6">Loading applications...</div>
+          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+            Loading applications...
+          </div>
         ) : applications.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
-            No pending applications right now.
+          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+            No pending provider verification applications right now.
           </div>
         ) : (
           <div className="space-y-4">
             {applications.map((a) => (
-              <div key={a._id} className="bg-white rounded-lg shadow p-5">
-                <div className="flex justify-between items-start mb-2">
+              <div key={a._id} className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl p-6 space-y-3">
+                <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-semibold text-gray-800">{a.organizationName}</h3>
-                    <p className="text-xs text-gray-400">
-                      Applicant: {a.user?.name} ({a.user?.email})
+                    <h3 className="font-bold text-white text-lg">{a.organizationName}</h3>
+                    <p className="text-xs text-slate-400">
+                      Applicant: <span className="text-slate-200">{a.user?.name}</span> ({a.user?.email})
                     </p>
                   </div>
-                  <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
-                    pending
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full">
+                    Pending Review
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mb-2">{a.description}</p>
+                <p className="text-xs text-slate-300 leading-relaxed">{a.description}</p>
                 {a.website && (
-                  <p className="text-xs text-blue-600 mb-3">{a.website}</p>
+                  <p className="text-xs text-teal-400 font-medium">{a.website}</p>
                 )}
                 {a.registrationNumber && (
-                  <p className="text-xs text-gray-400 mb-3">Reg #: {a.registrationNumber}</p>
+                  <p className="text-[11px] text-slate-500">Reg #: {a.registrationNumber}</p>
                 )}
-                <div className="flex gap-3">
+                <div className="flex gap-3 pt-2">
                   <button
                     onClick={() => handleApprove(a.user._id)}
                     disabled={processingId === a.user._id}
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm disabled:opacity-50"
+                    className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-2 text-xs font-bold text-slate-950 hover:from-emerald-400 hover:to-teal-400 transition disabled:opacity-50"
                   >
-                    Approve
+                    Approve Provider
                   </button>
                   <button
                     onClick={() => handleReject(a.user._id)}
                     disabled={processingId === a.user._id}
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm disabled:opacity-50"
+                    className="rounded-xl bg-red-500/10 border border-red-500/30 px-5 py-2 text-xs font-bold text-red-400 hover:bg-red-500/20 transition disabled:opacity-50"
                   >
-                    Reject
+                    Reject Application
                   </button>
                 </div>
               </div>

@@ -23,38 +23,55 @@ const Leaderboard = () => {
   const medals = ["🥇", "🥈", "🥉"];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
-      <div className="max-w-2xl mx-auto p-6">
-        <h1 className="text-2xl font-bold text-green-700 mb-6">Leaderboard</h1>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Hero Header */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+          <div className="relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
+              Global Rankings
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
+              Community Leaderboard 🏆
+            </h1>
+            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl">
+              Rankings based on total points earned by completing carbon reduction challenges and community quests.
+            </p>
+          </div>
+        </div>
 
         {loading ? (
-          <div className="text-center text-gray-500 py-6">Loading leaderboard...</div>
+          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+            Loading leaderboard standings...
+          </div>
         ) : leaderboard.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
-            No completed challenges yet. Be the first!
+          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+            No completed challenges yet. Be the first to earn points and claim rank #1!
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl overflow-hidden divide-y divide-slate-800/80">
             {leaderboard.map((entry, idx) => (
               <div
                 key={entry.userId}
-                className="flex items-center justify-between p-4 border-b last:border-0"
+                className="p-5 flex items-center justify-between hover:bg-slate-800/40 transition-colors"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg font-semibold text-gray-400 w-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-lg font-bold text-slate-400 shrink-0">
                     {medals[idx] || `#${idx + 1}`}
-                  </span>
+                  </div>
+
                   <div>
-                    <p className="font-medium text-gray-800">{entry.name}</p>
+                    <p className="font-bold text-white text-base">{entry.name}</p>
                     {entry.organization && (
-                      <p className="text-xs text-gray-400">{entry.organization}</p>
+                      <p className="text-xs text-emerald-400 font-medium">🏢 {entry.organization}</p>
                     )}
                   </div>
                 </div>
+
                 <div className="text-right">
-                  <p className="font-bold text-green-700">{entry.totalPoints} pts</p>
-                  <p className="text-xs text-gray-400">{entry.challengesCompleted} completed</p>
+                  <p className="text-lg font-extrabold text-emerald-400">{entry.totalPoints} <span className="text-xs font-semibold text-slate-400">pts</span></p>
+                  <p className="text-xs text-slate-500">{entry.challengesCompleted} challenge{entry.challengesCompleted !== 1 && "s"} completed</p>
                 </div>
               </div>
             ))}

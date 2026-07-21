@@ -3,6 +3,12 @@ import { Link } from "react-router-dom";
 import api from "../utils/api";
 import Navbar from "../components/Navbar";
 
+const roleBadges = {
+  user: "bg-blue-500/15 border-blue-500/30 text-blue-400",
+  provider: "bg-purple-500/15 border-purple-500/30 text-purple-400",
+  admin: "bg-red-500/15 border-red-500/30 text-red-400",
+};
+
 const AdminPanel = () => {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
@@ -54,102 +60,126 @@ const AdminPanel = () => {
     }
   };
 
-  const roleColors = {
-    user: "bg-blue-100 text-blue-700",
-    provider: "bg-purple-100 text-purple-700",
-    admin: "bg-red-100 text-red-700",
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
-      <div className="max-w-5xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-green-700">Admin Panel</h1>
-          <Link to="/admin/verification" className="text-green-600 font-medium">Verifications</Link>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Header Hero Banner */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
+                System Administration
+              </span>
+              <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
+                Admin Operations Panel 🛡️
+              </h1>
+              <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl">
+                Manage user permissions, monitor system-wide activity, and review provider applications.
+              </p>
+            </div>
+
+            <Link
+              to="/admin/verification"
+              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs hover:from-emerald-400 hover:to-teal-400 transition shadow-lg shadow-emerald-500/10 shrink-0 text-center"
+            >
+              Manage Provider Verifications →
+            </Link>
+          </div>
         </div>
 
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white rounded-lg shadow p-4 text-center">
-              <p className="text-2xl font-bold text-green-700">{stats.totalUsers}</p>
-              <p className="text-xs text-gray-500">Total Users</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
+              <p className="text-2xl font-black text-emerald-400">{stats.totalUsers}</p>
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">Total Users</p>
             </div>
-            <div className="bg-white rounded-lg shadow p-4 text-center">
-              <p className="text-2xl font-bold text-purple-600">{stats.totalProviders}</p>
-              <p className="text-xs text-gray-500">Verified Providers</p>
+            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
+              <p className="text-2xl font-black text-purple-400">{stats.totalProviders}</p>
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">Verified Providers</p>
             </div>
-            <div className="bg-white rounded-lg shadow p-4 text-center">
-              <p className="text-2xl font-bold text-blue-600">{stats.totalActivities}</p>
-              <p className="text-xs text-gray-500">Activities Logged</p>
+            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
+              <p className="text-2xl font-black text-blue-400">{stats.totalActivities}</p>
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">Activities Logged</p>
             </div>
-            <div className="bg-white rounded-lg shadow p-4 text-center">
-              <p className="text-2xl font-bold text-yellow-600">{stats.totalCO2Tracked}</p>
-              <p className="text-xs text-gray-500">Total kg CO2 Tracked</p>
+            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
+              <p className="text-2xl font-black text-yellow-400">{stats.totalCO2Tracked}</p>
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">kg CO2 Tracked</p>
             </div>
-            <div className="bg-white rounded-lg shadow p-4 text-center">
-              <p className="text-2xl font-bold text-orange-600">{stats.totalOrders}</p>
-              <p className="text-xs text-gray-500">Paid Orders</p>
+            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
+              <p className="text-2xl font-black text-teal-400">{stats.totalOrders}</p>
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">Paid Orders</p>
             </div>
-            <div className="bg-white rounded-lg shadow p-4 text-center">
-              <p className="text-2xl font-bold text-green-700">${stats.totalRevenue}</p>
-              <p className="text-xs text-gray-500">Total Revenue</p>
+            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
+              <p className="text-2xl font-black text-emerald-400">${stats.totalRevenue}</p>
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">Total Revenue</p>
             </div>
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">User Management</h2>
+        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 shadow-xl space-y-6">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">User Control</span>
+            <h2 className="text-xl font-bold text-white tracking-tight">System User Directory</h2>
+          </div>
 
-          <form onSubmit={handleSearch} className="flex gap-3 mb-4">
+          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
             <input
               type="text"
               placeholder="Search by name or email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 border rounded px-3 py-2 text-sm"
+              className="flex-1 rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2 text-xs text-slate-100 outline-none focus:border-emerald-500"
             />
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="border rounded px-3 py-2 text-sm"
+              className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2 text-xs text-slate-100 outline-none focus:border-emerald-500"
             >
               <option value="">All Roles</option>
               <option value="user">User</option>
               <option value="provider">Provider</option>
               <option value="admin">Admin</option>
             </select>
-            <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700">
-              Search
+            <button
+              type="submit"
+              className="rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-2 text-xs font-bold text-slate-950 hover:from-emerald-400 hover:to-teal-400 transition"
+            >
+              Filter
             </button>
           </form>
 
           {loading ? (
-            <div className="text-center text-gray-500 py-6">Loading users...</div>
+            <div className="text-center text-slate-400 py-6 text-xs">Loading user list...</div>
           ) : (
-            <div className="divide-y">
-              {users.map((u) => (
-                <div key={u._id} className="flex items-center justify-between py-3">
-                  <div>
-                    <p className="font-medium text-gray-800">{u.name}</p>
-                    <p className="text-xs text-gray-400">{u.email}</p>
+            <div className="divide-y divide-slate-800">
+              {users.map((u) => {
+                const roleBadge = roleBadges[u.role] || roleBadges.user;
+
+                return (
+                  <div key={u._id} className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-3">
+                    <div>
+                      <p className="font-bold text-white text-sm">{u.name}</p>
+                      <p className="text-xs text-slate-400">{u.email}</p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${roleBadge}`}>
+                        {u.role}
+                      </span>
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${u.isActive ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-slate-800 border-slate-700 text-slate-400"}`}>
+                        {u.isActive ? "Active" : "Inactive"}
+                      </span>
+                      <button
+                        onClick={() => handleToggleStatus(u._id, u.isActive)}
+                        className="px-3 py-1 rounded-xl bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-300 hover:bg-slate-700 transition"
+                      >
+                        {u.isActive ? "Deactivate" : "Activate"}
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`text-xs font-medium px-2 py-1 rounded ${roleColors[u.role]}`}>
-                      {u.role}
-                    </span>
-                    <span className={`text-xs px-2 py-1 rounded ${u.isActive ? "bg-green-100 text-green-700" : "bg-gray-200 text-gray-600"}`}>
-                      {u.isActive ? "active" : "inactive"}
-                    </span>
-                    <button
-                      onClick={() => handleToggleStatus(u._id, u.isActive)}
-                      className="text-sm font-medium text-blue-600 hover:text-blue-800"
-                    >
-                      {u.isActive ? "Deactivate" : "Activate"}
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

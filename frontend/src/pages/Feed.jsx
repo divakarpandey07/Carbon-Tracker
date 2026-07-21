@@ -5,9 +5,9 @@ import Navbar from "../components/Navbar";
 
 const postTypeLabels = {
   achievement: "🏆 Achievement",
-  tip: "💡 Tip",
+  tip: "💡 Eco Tip",
   milestone: "🎯 Milestone",
-  general: "💬 General",
+  general: "💬 Community Post",
 };
 
 const Feed = () => {
@@ -93,25 +93,39 @@ const Feed = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
       <Navbar />
-      <div className="max-w-2xl mx-auto p-6">
-        <h1 className="text-2xl font-bold text-green-700 mb-6">Community Feed</h1>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Header Hero Banner */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+          <div className="relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
+              Social Network
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
+              Eco Community Feed 💬
+            </h1>
+            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl">
+              Share your sustainability achievements, tips from campus & regional drives, and celebrate green milestones with fellow members.
+            </p>
+          </div>
+        </div>
 
-        <form onSubmit={handlePost} className="bg-white rounded-lg shadow p-4 mb-6">
+        {/* Create Post Form */}
+        <form onSubmit={handlePost} className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 shadow-xl space-y-4">
           <textarea
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
-            placeholder="Share your progress, tips, or achievements..."
+            placeholder="Share your eco progress, tips, or Varanasi Ghats / LPU campus updates..."
             rows={3}
             maxLength={500}
-            className="w-full border rounded px-3 py-2 mb-3"
+            className="w-full rounded-2xl border border-slate-700 bg-slate-950 p-4 text-xs text-slate-100 outline-none focus:border-emerald-500"
           />
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-3">
             <select
               value={postType}
               onChange={(e) => setPostType(e.target.value)}
-              className="border rounded px-2 py-1 text-sm"
+              className="rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-slate-100 outline-none focus:border-emerald-500"
             >
               {Object.entries(postTypeLabels).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
@@ -120,68 +134,70 @@ const Feed = () => {
             <button
               type="submit"
               disabled={posting || !newPost.trim()}
-              className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 text-sm disabled:opacity-50"
+              className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-2 text-xs font-bold text-slate-950 shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-400 transition disabled:opacity-50"
             >
-              {posting ? "Posting..." : "Post"}
+              {posting ? "Posting..." : "Share Post"}
             </button>
           </div>
         </form>
 
         {loading ? (
-          <div className="text-center text-gray-500 py-6">Loading feed...</div>
+          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+            Loading community feed...
+          </div>
         ) : posts.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
-            No posts yet. Be the first to share!
+          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
+            No posts yet. Be the first to share an eco milestone!
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {posts.map((post) => {
               const isLiked = post.likes.includes(user._id);
               const isOwner = post.user?._id === user._id;
 
               return (
-                <div key={post._id} className="bg-white rounded-lg shadow p-5">
-                  <div className="flex justify-between items-start mb-2">
+                <div key={post._id} className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl p-6 space-y-4">
+                  <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium text-gray-800">{post.user?.name}</p>
-                      <p className="text-xs text-gray-400">
-                        {postTypeLabels[post.postType]} • {new Date(post.createdAt).toLocaleDateString()}
+                      <p className="font-bold text-white text-base">{post.user?.name}</p>
+                      <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+                        <span className="text-emerald-400 font-semibold">{postTypeLabels[post.postType]}</span> • {new Date(post.createdAt).toLocaleDateString()}
                       </p>
                     </div>
                     {(isOwner || user.role === "admin") && (
                       <button
                         onClick={() => handleDelete(post._id)}
-                        className="text-red-400 hover:text-red-600 text-xs"
+                        className="text-red-400 hover:text-red-300 text-xs font-semibold"
                       >
                         Delete
                       </button>
                     )}
                   </div>
 
-                  <p className="text-gray-700 mb-3">{post.content}</p>
+                  <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">{post.content}</p>
 
-                  <div className="flex items-center gap-4 text-sm text-gray-500 border-t pt-3">
+                  <div className="flex items-center gap-4 text-xs text-slate-400 border-t border-slate-800 pt-3">
                     <button
                       onClick={() => handleLike(post._id)}
-                      className={`flex items-center gap-1 ${isLiked ? "text-red-500" : "hover:text-red-500"}`}
+                      className={`flex items-center gap-1.5 font-bold transition ${isLiked ? "text-red-400" : "hover:text-red-400"}`}
                     >
-                      {isLiked ? "❤️" : "🤍"} {post.likes.length}
+                      {isLiked ? "❤️" : "🤍"} {post.likes.length} Likes
                     </button>
-                    <span>💬 {post.comments.length}</span>
+                    <span className="font-semibold">💬 {post.comments.length} Comments</span>
                   </div>
 
                   {post.comments.length > 0 && (
-                    <div className="mt-3 space-y-2 border-t pt-3">
+                    <div className="space-y-2 border-t border-slate-800/80 pt-3">
                       {post.comments.map((c, idx) => (
-                        <div key={idx} className="text-sm">
-                          <span className="font-medium text-gray-700">{c.user?.name}: </span>
-                          <span className="text-gray-600">{c.text}</span>
+                        <div key={idx} className="text-xs rounded-xl bg-slate-950 p-2.5 border border-slate-800">
+                          <span className="font-bold text-emerald-400">{c.user?.name}: </span>
+                          <span className="text-slate-300">{c.text}</span>
                         </div>
                       ))}
                     </div>
                   )}
 
-                  <div className="mt-3 flex gap-2">
+                  <div className="flex gap-2">
                     <input
                       type="text"
                       placeholder="Add a comment..."
@@ -190,11 +206,11 @@ const Feed = () => {
                         setCommentInputs({ ...commentInputs, [post._id]: e.target.value })
                       }
                       onKeyDown={(e) => e.key === "Enter" && handleComment(post._id)}
-                      className="flex-1 border rounded px-3 py-1 text-sm"
+                      className="flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-1.5 text-xs text-slate-100 outline-none focus:border-emerald-500"
                     />
                     <button
                       onClick={() => handleComment(post._id)}
-                      className="text-green-600 text-sm font-medium"
+                      className="px-4 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 font-bold text-xs hover:bg-slate-700 transition"
                     >
                       Send
                     </button>
