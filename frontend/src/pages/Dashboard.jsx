@@ -16,6 +16,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const [showCertModal, setShowCertModal] = useState(false);
+  const [footprintData, setFootprintData] = useState(null);
 
   const fetchActivities = async () => {
     try {
@@ -28,18 +29,49 @@ const Dashboard = () => {
     }
   };
 
+  const fetchFootprint = async () => {
+    try {
+      const { data } = await api.get("/footprint/total");
+      setFootprintData(data);
+    } catch (err) {
+      console.error("Failed to fetch footprint:", err);
+    }
+  };
+
   useEffect(() => {
     fetchActivities();
+    fetchFootprint();
   }, []);
 
   const handleActivityAdded = (newActivity) => {
     setActivities([newActivity, ...activities]);
     setRefreshKey((k) => k + 1);
+    fetchFootprint(); // refresh footprint when new activity added
   };
 
   const handleActivityDeleted = (id) => {
     setActivities(activities.filter((a) => a._id !== id));
     setRefreshKey((k) => k + 1);
+    fetchFootprint();
+  };
+
+  // Build real certificate data from actual dashboard state
+  const buildCertData = () => {
+    const totalCO2 = footprintData?.grandTotalCO2 || 0;
+    const breakdown = footprintData?.breakdown || [];
+    const topCategory = breakdown[0]?._id || "General Activities";
+    const activityCount = activities.length;
+    const txRef = `CT-${user?._id?.slice(-6)?.toUpperCase() || "000000"}-${new Date().getFullYear()}`;
+    return {
+      quantity: totalCO2,
+      transactionRef: txRef,
+      activityCount,
+      topCategory,
+      breakdown,
+      listing: {
+        title: `${activityCount} Tracked Activities — Top Category: ${topCategory}`,
+      },
+    };
   };
 
   return (
@@ -75,8 +107,10 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex-1 min-w-[120px] rounded-2xl bg-slate-950/60 backdrop-blur-md border border-emerald-500/20 p-4 text-center">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Logs</p>
-                  <p className="mt-1 text-2xl font-black text-white">{activities.length}</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total CO₂</p>
+                  <p className="mt-1 text-lg font-black text-emerald-400">
+                    {footprintData ? `${footprintData.grandTotalCO2} kg` : `${activities.length} logs`}
+                  </p>
                 </div>
               </div>
 
@@ -85,7 +119,7 @@ const Dashboard = () => {
                 className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs hover:scale-105 transition shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2"
               >
                 <span>📜</span>
-                <span>Generate Verified Certificate</span>
+                <span>Generate Certificate</span>
               </button>
             </div>
           </div>
@@ -123,12 +157,12 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Certificate Modal */}
+      {/* Certificate Modal — driven by real footprint data */}
       {showCertModal && (
         <CertificateModal
           isOpen={showCertModal}
           onClose={() => setShowCertModal(false)}
-          orderData={{ quantity: 50, transactionRef: `CT-DB-${Math.floor(100000 + Math.random() * 900000)}` }}
+          orderData={buildCertData()}
           user={user}
         />
       )}
