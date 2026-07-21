@@ -81,4 +81,29 @@ const applyAsProvider = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getMe, applyAsProvider };
+const updateProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (req.body.name) user.name = req.body.name;
+    if (req.body.organization !== undefined) user.organization = req.body.organization;
+
+    await user.save();
+
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      organization: user.organization,
+      providerStatus: user.providerStatus,
+      token: req.headers.authorization ? req.headers.authorization.split(" ")[1] : null,
+    });
+  } catch (error) {
+    console.error("UPDATE PROFILE ERROR:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, getMe, applyAsProvider, updateProfile };

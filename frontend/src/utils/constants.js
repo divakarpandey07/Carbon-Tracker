@@ -24,17 +24,17 @@ export const CAR_FUEL_TYPES = [
   { value: "petrol", label: "Petrol" },
   { value: "diesel", label: "Diesel" },
   { value: "cng", label: "CNG" },
-  { value: "electric", label: "Electric Vehicle (EV)" },
+  { value: "electric", label: "Electric (EV)" },
 ];
 
 export const CAR_SIZES = [
-  { value: "small", label: "Small (Hatchback / Sedan)" },
-  { value: "medium", label: "Medium (Mid-SUV / Crossover)" },
-  { value: "large", label: "Large (Full SUV / Truck)" },
+  { value: "small", label: "Small Hatchback" },
+  { value: "medium", label: "Medium SUV" },
+  { value: "large", label: "Large SUV / Truck" },
 ];
 
 export const CAR_AGES = [
-  { value: "new", label: "New (< 5 years old - Modern standard)" },
-  { value: "mid", label: "Moderate (5 - 10 years old)" },
-  { value: "old", label: "Old (> 10 years old - Higher emissions)" },
+  { value: "new", label: "New (< 5 yrs)" },
+  { value: "mid", label: "Mid (5 - 10 yrs)" },
+  { value: "old", label: "Old (> 10 yrs)" },
 ];
