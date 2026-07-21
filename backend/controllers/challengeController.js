@@ -232,9 +232,11 @@ const ensureLeaderboardData = async () => {
           role: item.role,
           organization: item.organization,
         });
-      } else if (item.role === "admin" && user.name !== "Divakar Pandey") {
-        user.name = "Divakar Pandey";
-        await user.save();
+      } else {
+        if (user.organization !== item.organization) {
+          user.organization = item.organization;
+          await user.save();
+        }
       }
 
       let participant = await ChallengeParticipant.findOne({ user: user._id });
