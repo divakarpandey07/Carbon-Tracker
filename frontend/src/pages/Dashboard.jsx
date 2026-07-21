@@ -6,6 +6,7 @@ import ActivityForm from "../components/ActivityForm";
 import ActivityList from "../components/ActivityList";
 import FootprintSummary from "../components/FootprintSummary";
 import FootprintTrendChart from "../components/FootprintTrendChart";
+import EcoInsights from "../components/EcoInsights";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -87,19 +88,22 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Activity Form and Activity List */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-5">
+        {/* Activity Form and Activity List + Live Eco Insights */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-5 sticky top-20">
             <ActivityForm onActivityAdded={handleActivityAdded} />
           </div>
 
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 space-y-8">
             {loading ? (
               <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center text-slate-400">
                 Loading activity history...
               </div>
             ) : (
-              <ActivityList activities={activities} onActivityDeleted={handleActivityDeleted} />
+              <>
+                <ActivityList activities={activities} onActivityDeleted={handleActivityDeleted} />
+                <EcoInsights activities={activities} />
+              </>
             )}
           </div>
         </div>
