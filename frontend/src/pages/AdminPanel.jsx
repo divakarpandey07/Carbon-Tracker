@@ -4,9 +4,9 @@ import api from "../utils/api";
 import Navbar from "../components/Navbar";
 
 const roleBadges = {
-  user: "bg-blue-500/15 border-blue-500/30 text-blue-400",
-  provider: "bg-purple-500/15 border-purple-500/30 text-purple-400",
-  admin: "bg-red-500/15 border-red-500/30 text-red-400",
+  user: "bg-blue-100 border-blue-200 text-blue-800",
+  provider: "bg-purple-100 border-purple-200 text-purple-800",
+  admin: "bg-rose-100 border-rose-200 text-rose-800",
 };
 
 const AdminPanel = () => {
@@ -61,66 +61,66 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen text-[#1A3022] font-sans selection:bg-[#0F2D1E] selection:text-white">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Header Hero Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-8 sm:p-10 border border-emerald-500/20 shadow-2xl">
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-[#0F2D1E] via-[#163E2B] to-[#204E36] p-8 sm:p-12 text-white shadow-xl shadow-emerald-950/15">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full">
-                System Administration
+              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 bg-emerald-400/15 border border-emerald-400/30 px-3.5 py-1.5 rounded-full">
+                Administration
               </span>
-              <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mt-3">
-                Admin Operations Panel 🛡️
+              <h1 className="font-serif text-3xl sm:text-5xl font-extrabold tracking-tight mt-3">
+                Admin Panel 🛡️
               </h1>
-              <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl">
+              <p className="mt-2 text-emerald-100/80 text-sm sm:text-base max-w-xl leading-relaxed">
                 Manage user permissions, monitor system-wide activity, and review provider applications.
               </p>
             </div>
 
             <Link
               to="/admin/verification"
-              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs hover:from-emerald-400 hover:to-teal-400 transition shadow-lg shadow-emerald-500/10 shrink-0 text-center"
+              className="px-5 py-2.5 rounded-2xl bg-white text-[#0F2D1E] font-bold text-xs hover:bg-emerald-50 transition shadow-md shrink-0 text-center"
             >
-              Manage Provider Verifications →
+              Provider Verifications →
             </Link>
           </div>
         </div>
 
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
-              <p className="text-2xl font-black text-emerald-400">{stats.totalUsers}</p>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">Total Users</p>
+            <div className="eco-card p-4 text-center">
+              <p className="text-2xl font-black text-[#0F2D1E]">{stats.totalUsers}</p>
+              <p className="text-[10px] font-bold text-[#557560] uppercase tracking-widest mt-1">Total Users</p>
             </div>
-            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
-              <p className="text-2xl font-black text-purple-400">{stats.totalProviders}</p>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">Verified Providers</p>
+            <div className="eco-card p-4 text-center">
+              <p className="text-2xl font-black text-[#9333ea]">{stats.totalProviders}</p>
+              <p className="text-[10px] font-bold text-[#557560] uppercase tracking-widest mt-1">Providers</p>
             </div>
-            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
-              <p className="text-2xl font-black text-blue-400">{stats.totalActivities}</p>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">Activities Logged</p>
+            <div className="eco-card p-4 text-center">
+              <p className="text-2xl font-black text-[#2563eb]">{stats.totalActivities}</p>
+              <p className="text-[10px] font-bold text-[#557560] uppercase tracking-widest mt-1">Activities</p>
             </div>
-            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
-              <p className="text-2xl font-black text-yellow-400">{stats.totalCO2Tracked}</p>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">kg CO2 Tracked</p>
+            <div className="eco-card p-4 text-center">
+              <p className="text-2xl font-black text-[#d97706]">{stats.totalCO2Tracked}</p>
+              <p className="text-[10px] font-bold text-[#557560] uppercase tracking-widest mt-1">kg CO2 Tracked</p>
             </div>
-            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
-              <p className="text-2xl font-black text-teal-400">{stats.totalOrders}</p>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">Paid Orders</p>
+            <div className="eco-card p-4 text-center">
+              <p className="text-2xl font-black text-[#0891b2]">{stats.totalOrders}</p>
+              <p className="text-[10px] font-bold text-[#557560] uppercase tracking-widest mt-1">Orders</p>
             </div>
-            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-4 text-center shadow-xl">
-              <p className="text-2xl font-black text-emerald-400">${stats.totalRevenue}</p>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1">Total Revenue</p>
+            <div className="eco-card p-4 text-center">
+              <p className="text-2xl font-black text-[#0F2D1E]">${stats.totalRevenue}</p>
+              <p className="text-[10px] font-bold text-[#557560] uppercase tracking-widest mt-1">Revenue</p>
             </div>
           </div>
         )}
 
-        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 shadow-xl space-y-6">
+        <div className="eco-card p-6 sm:p-8 space-y-6">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">User Control</span>
-            <h2 className="text-xl font-bold text-white tracking-tight">System User Directory</h2>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#0F2D1E]">Directory</span>
+            <h2 className="font-serif text-xl font-extrabold text-[#0F2D1E] tracking-tight">User Management</h2>
           </div>
 
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
@@ -129,12 +129,12 @@ const AdminPanel = () => {
               placeholder="Search by name or email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2 text-xs text-slate-100 outline-none focus:border-emerald-500"
+              className="flex-1 rounded-2xl border border-emerald-950/15 bg-white px-4 py-2 text-xs text-[#1A3022] outline-none focus:border-[#0F2D1E]"
             />
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2 text-xs text-slate-100 outline-none focus:border-emerald-500"
+              className="rounded-2xl border border-emerald-950/15 bg-white px-4 py-2 text-xs text-[#1A3022] outline-none focus:border-[#0F2D1E]"
             >
               <option value="">All Roles</option>
               <option value="user">User</option>
@@ -143,36 +143,36 @@ const AdminPanel = () => {
             </select>
             <button
               type="submit"
-              className="rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-2 text-xs font-bold text-slate-950 hover:from-emerald-400 hover:to-teal-400 transition"
+              className="rounded-2xl bg-[#0F2D1E] px-6 py-2 text-xs font-bold text-white hover:bg-[#163E2B] transition"
             >
               Filter
             </button>
           </form>
 
           {loading ? (
-            <div className="text-center text-slate-400 py-6 text-xs">Loading user list...</div>
+            <div className="text-center text-[#557560] py-6 text-xs">Loading user list...</div>
           ) : (
-            <div className="divide-y divide-slate-800">
+            <div className="divide-y divide-emerald-950/10">
               {users.map((u) => {
                 const roleBadge = roleBadges[u.role] || roleBadges.user;
 
                 return (
                   <div key={u._id} className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-3">
                     <div>
-                      <p className="font-bold text-white text-sm">{u.name}</p>
-                      <p className="text-xs text-slate-400">{u.email}</p>
+                      <p className="font-bold text-[#0F2D1E] text-sm">{u.name}</p>
+                      <p className="text-xs text-[#557560]">{u.email}</p>
                     </div>
 
                     <div className="flex items-center gap-3">
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${roleBadge}`}>
                         {u.role}
                       </span>
-                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${u.isActive ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-slate-800 border-slate-700 text-slate-400"}`}>
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${u.isActive ? "bg-emerald-100 border-emerald-300 text-emerald-800" : "bg-slate-100 border-slate-300 text-slate-600"}`}>
                         {u.isActive ? "Active" : "Inactive"}
                       </span>
                       <button
                         onClick={() => handleToggleStatus(u._id, u.isActive)}
-                        className="px-3 py-1 rounded-xl bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-300 hover:bg-slate-700 transition"
+                        className="px-3 py-1 rounded-xl bg-white border border-emerald-950/15 text-xs font-bold text-[#0F2D1E] hover:bg-emerald-50 transition"
                       >
                         {u.isActive ? "Deactivate" : "Activate"}
                       </button>

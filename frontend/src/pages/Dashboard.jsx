@@ -40,46 +40,42 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen text-[#1A3022] font-sans selection:bg-[#0F2D1E] selection:text-white">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Sleek Minimalist Glass Hero Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-8 sm:p-10 shadow-2xl">
-          {/* Subtle Ambient Glow Blobs */}
-          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
-          <div className="absolute bottom-0 left-10 -mb-20 w-72 h-72 rounded-full bg-teal-500/10 blur-3xl pointer-events-none"></div>
-
+        {/* Studio Organic Hero Banner */}
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-[#0F2D1E] via-[#163E2B] to-[#204E36] p-8 sm:p-12 text-white shadow-xl shadow-emerald-950/15">
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-3">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                Real-Time Carbon Telemetry
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-400/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-4">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Climate Action Telemetry
               </div>
-              <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-                Welcome back, <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">{user?.name}</span> 👋
+              <h1 className="font-serif text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+                Welcome back, <span className="italic font-normal text-emerald-200">{user?.name}</span> 👋
               </h1>
-              <p className="mt-2 text-slate-300 max-w-2xl text-sm sm:text-base leading-relaxed">
-                Log daily activities with smart vehicle factors, track category footprints, and view your emissions trajectory.
+              <p className="mt-3 text-emerald-100/80 max-w-2xl text-sm sm:text-base leading-relaxed">
+                Log daily activities with smart vehicle factors, track category footprints, and monitor your personal carbon trajectory.
               </p>
             </div>
 
-            {/* Floating Glass Stat Pills */}
+            {/* Organic Stat Pills */}
             <div className="flex flex-wrap sm:flex-nowrap gap-3">
-              <div className="flex-1 min-w-[130px] rounded-2xl bg-slate-950/60 backdrop-blur-md border border-slate-800 p-4 text-center hover:border-emerald-500/30 transition-all">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Account Role</p>
-                <p className="mt-1 text-base font-extrabold text-emerald-400 capitalize">{user?.role || "User"}</p>
+              <div className="flex-1 min-w-[140px] rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 p-4 text-center">
+                <p className="text-[10px] font-bold text-emerald-200/80 uppercase tracking-widest">Account Role</p>
+                <p className="mt-1 text-base font-extrabold text-emerald-300 capitalize">{user?.role || "User"}</p>
               </div>
 
-              <div className="flex-1 min-w-[130px] rounded-2xl bg-slate-950/60 backdrop-blur-md border border-slate-800 p-4 text-center hover:border-emerald-500/30 transition-all">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Logs</p>
+              <div className="flex-1 min-w-[140px] rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 p-4 text-center">
+                <p className="text-[10px] font-bold text-emerald-200/80 uppercase tracking-widest">Total Activity Logs</p>
                 <p className="mt-1 text-2xl font-black text-white">{activities.length}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Footprint Summary & Trend Chart Grid */}
+        {/* Footprint Summary & Trend Chart Bento Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-6 space-y-8">
             <FootprintSummary key={`summary-${refreshKey}`} />
@@ -97,7 +93,7 @@ const Dashboard = () => {
 
           <div className="lg:col-span-7 space-y-8">
             {loading ? (
-              <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-8 text-center text-slate-400">
+              <div className="eco-card p-8 text-center text-[#557560]">
                 Loading activity history...
               </div>
             ) : (

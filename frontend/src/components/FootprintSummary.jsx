@@ -12,13 +12,13 @@ const categoryIcons = {
 };
 
 const categoryCardStyles = {
-  transport: "from-blue-500/10 via-slate-900/40 to-slate-900/60 border-blue-500/30 text-blue-400",
-  food: "from-amber-500/10 via-slate-900/40 to-slate-900/60 border-amber-500/30 text-amber-400",
-  electricity: "from-yellow-500/10 via-slate-900/40 to-slate-900/60 border-yellow-500/30 text-yellow-400",
-  water: "from-cyan-500/10 via-slate-900/40 to-slate-900/60 border-cyan-500/30 text-cyan-400",
-  gas: "from-purple-500/10 via-slate-900/40 to-slate-900/60 border-purple-500/30 text-purple-400",
-  waste: "from-emerald-500/10 via-slate-900/40 to-slate-900/60 border-emerald-500/30 text-emerald-400",
-  other: "from-slate-500/10 via-slate-900/40 to-slate-900/60 border-slate-500/30 text-slate-400",
+  transport: "bg-blue-50/80 border-blue-200/60 text-blue-900",
+  food: "bg-amber-50/80 border-amber-200/60 text-amber-900",
+  electricity: "bg-yellow-50/80 border-yellow-200/60 text-yellow-900",
+  water: "bg-cyan-50/80 border-cyan-200/60 text-cyan-900",
+  gas: "bg-purple-50/80 border-purple-200/60 text-purple-900",
+  waste: "bg-emerald-50/80 border-emerald-200/60 text-emerald-900",
+  other: "bg-slate-50/80 border-slate-200/60 text-slate-900",
 };
 
 const FootprintSummary = () => {
@@ -42,7 +42,7 @@ const FootprintSummary = () => {
 
   if (loading) {
     return (
-      <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-8 text-center text-slate-400">
+      <div className="eco-card p-8 text-center text-[#557560]">
         Loading footprint totals...
       </div>
     );
@@ -50,33 +50,33 @@ const FootprintSummary = () => {
 
   if (!data || data.grandTotalCO2 === 0) {
     return (
-      <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-8 text-center text-slate-400 flex flex-col items-center justify-center">
+      <div className="eco-card p-8 text-center text-[#557560] flex flex-col items-center justify-center">
         <span className="text-4xl mb-3">🌱</span>
-        <p className="font-semibold text-slate-200">No footprint data recorded yet</p>
-        <p className="text-xs text-slate-500 mt-1">Log your daily travel or energy usage to start tracking.</p>
+        <p className="font-bold text-[#0F2D1E]">No footprint data recorded yet</p>
+        <p className="text-xs text-[#557560] mt-1">Log your daily travel or energy usage to start tracking.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-2xl p-6 sm:p-8 flex flex-col justify-between h-full">
+    <div className="eco-card p-6 sm:p-8 flex flex-col justify-between h-full">
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Overview</span>
-            <h2 className="text-2xl font-black text-white tracking-tight">Total Carbon Footprint</h2>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C96A2B]">Analytics Overview</span>
+            <h2 className="font-serif text-2xl sm:text-3xl font-extrabold text-[#0F2D1E] tracking-tight">Total Footprint</h2>
           </div>
-          <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-transparent border border-emerald-500/30">
+          <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-[#0F2D1E] text-white shadow-md">
             <span className="text-2xl">🌱</span>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">Total Emitted</p>
-              <p className="text-2xl font-black text-white">{data.grandTotalCO2} <span className="text-xs font-semibold text-emerald-400">kg CO2e</span></p>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-emerald-300">Total Emitted</p>
+              <p className="text-2xl font-black">{data.grandTotalCO2} <span className="text-xs font-normal text-emerald-200">kg CO2e</span></p>
             </div>
           </div>
         </div>
 
         {/* Category breakdown grid */}
-        <p className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">Breakdown by Category</p>
+        <p className="text-[10px] font-bold text-[#557560] mb-3 uppercase tracking-widest">Category Breakdown</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {data.breakdown.map((item) => {
             const percent = Math.round((item.totalCO2 / data.grandTotalCO2) * 100) || 0;
@@ -85,18 +85,18 @@ const FootprintSummary = () => {
             return (
               <div
                 key={item._id}
-                className={`rounded-2xl border bg-gradient-to-br ${cardStyle} p-4 transition-all duration-300 hover:scale-[1.03] flex flex-col justify-between shadow-lg`}
+                className={`rounded-2xl border ${cardStyle} p-4 transition-all duration-300 hover:scale-[1.02] flex flex-col justify-between shadow-sm`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-2xl">{categoryIcons[item._id] || "📊"}</span>
-                  <span className="text-[11px] font-black px-2 py-0.5 rounded-full bg-slate-950/80 border border-current">
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/90 shadow-xs">
                     {percent}%
                   </span>
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-300 capitalize">{item._id}</p>
-                  <p className="text-xl font-extrabold text-white mt-0.5">{item.totalCO2} <span className="text-xs font-normal opacity-70">kg</span></p>
-                  <p className="text-[11px] text-slate-400 mt-1">{item.count} log{item.count !== 1 && "s"}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider capitalize">{item._id}</p>
+                  <p className="text-xl font-black mt-0.5">{item.totalCO2} <span className="text-xs font-normal opacity-70">kg</span></p>
+                  <p className="text-[11px] opacity-80 mt-1">{item.count} log{item.count !== 1 && "s"}</p>
                 </div>
               </div>
             );

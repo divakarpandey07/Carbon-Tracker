@@ -34,34 +34,34 @@ const EcoInsights = ({ activities }) => {
   return (
     <div className="space-y-6">
       {/* Real-world Carbon Impact Converter */}
-      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl p-6">
+      <div className="eco-card p-6 sm:p-8">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="text-lg">🌍</span>
-            <h3 className="text-base font-bold text-white tracking-tight">Real-World Impact Equivalents</h3>
+            <h3 className="font-serif text-xl font-bold text-[#0F2D1E] tracking-tight">Real-World Equivalents</h3>
           </div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#0F2D1E] bg-[#EAF2E9] border border-emerald-900/15 px-3 py-1 rounded-full">
             Live Conversion
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 text-center hover:border-emerald-500/30 transition-all">
+          <div className="rounded-2xl bg-white border border-emerald-950/10 p-4 text-center shadow-xs">
             <span className="text-2xl mb-1 block">🌳</span>
-            <p className="text-xl font-extrabold text-emerald-400">{stats.treesNeeded}</p>
-            <p className="text-[11px] text-slate-400 font-medium mt-0.5">Trees needed to absorb (1 yr)</p>
+            <p className="text-2xl font-black text-[#0F2D1E]">{stats.treesNeeded}</p>
+            <p className="text-[11px] text-[#557560] font-bold mt-0.5">Trees needed to absorb (1 yr)</p>
           </div>
 
-          <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 text-center hover:border-teal-500/30 transition-all">
+          <div className="rounded-2xl bg-white border border-emerald-950/10 p-4 text-center shadow-xs">
             <span className="text-2xl mb-1 block">📱</span>
-            <p className="text-xl font-extrabold text-teal-400">{stats.phoneCharges.toLocaleString()}</p>
-            <p className="text-[11px] text-slate-400 font-medium mt-0.5">Smartphone full charges</p>
+            <p className="text-2xl font-black text-[#0F2D1E]">{stats.phoneCharges.toLocaleString()}</p>
+            <p className="text-[11px] text-[#557560] font-bold mt-0.5">Smartphone full charges</p>
           </div>
 
-          <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 text-center hover:border-cyan-500/30 transition-all">
+          <div className="rounded-2xl bg-white border border-emerald-950/10 p-4 text-center shadow-xs">
             <span className="text-2xl mb-1 block">💡</span>
-            <p className="text-xl font-extrabold text-cyan-400">{stats.bulbHours.toLocaleString()} hrs</p>
-            <p className="text-[11px] text-slate-400 font-medium mt-0.5">LED Lightbulb continuous run</p>
+            <p className="text-2xl font-black text-[#0F2D1E]">{stats.bulbHours.toLocaleString()} hrs</p>
+            <p className="text-[11px] text-[#557560] font-bold mt-0.5">LED Lightbulb continuous run</p>
           </div>
         </div>
       </div>
@@ -69,20 +69,20 @@ const EcoInsights = ({ activities }) => {
       {/* AI Smart Tip & Weekly Budget Progress */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Dynamic AI Tip */}
-        <div className="rounded-3xl bg-gradient-to-br from-emerald-950/50 via-slate-900 to-slate-900 border border-emerald-500/30 shadow-xl p-6 flex flex-col justify-between">
+        <div className="eco-card p-6 flex flex-col justify-between bg-gradient-to-br from-[#EAF2E9] to-white">
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-base">🤖</span>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">AI Eco-Recommendation</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#C96A2B]">AI Recommendation</span>
             </div>
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+            <p className="text-xs sm:text-sm text-[#1A3022] leading-relaxed font-medium">
               {stats.topCategory === "transport" ? (
                 <>
-                  <strong className="text-emerald-300">Transport</strong> is your primary carbon driver. Replacing 2 petrol car trips with electric/bus or cycling saves ~<span className="text-emerald-400 font-bold">8.5 kg CO2</span> this week!
+                  <strong className="text-[#0F2D1E]">Transport</strong> is your primary carbon driver. Replacing 2 petrol car trips with electric/bus or cycling saves ~<span className="text-[#0F2D1E] font-extrabold">8.5 kg CO2</span> this week!
                 </>
               ) : stats.topCategory === "food" ? (
                 <>
-                  <strong className="text-amber-300">Food & Meat</strong> meals account for your highest footprint. Opting for plant-based meals 2 days a week cuts up to <span className="text-emerald-400 font-bold">11 kg CO2</span>.
+                  <strong className="text-[#C96A2B]">Food & Meat</strong> meals account for your highest footprint. Opting for plant-based meals 2 days a week cuts up to <span className="text-[#0F2D1E] font-extrabold">11 kg CO2</span>.
                 </>
               ) : (
                 <>
@@ -92,41 +92,41 @@ const EcoInsights = ({ activities }) => {
             </p>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+          <div className="mt-4 pt-3 border-t border-emerald-950/10 flex items-center justify-between text-xs text-[#557560]">
             <span>Potential Weekly Reduction</span>
-            <span className="font-bold text-emerald-400">-25% CO2</span>
+            <span className="font-extrabold text-[#0F2D1E]">-25% CO2</span>
           </div>
         </div>
 
         {/* Weekly Carbon Budget */}
-        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl p-6 flex flex-col justify-between">
+        <div className="eco-card p-6 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-base">🎯</span>
-                <span className="text-xs font-bold uppercase tracking-wider text-teal-400">Weekly Carbon Budget</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#0F2D1E]">Weekly Carbon Budget</span>
               </div>
-              <span className="text-xs font-bold text-white">
+              <span className="text-xs font-black text-[#0F2D1E]">
                 {stats.totalCO2} / {weeklyBudget} kg
               </span>
             </div>
 
-            <p className="text-xs text-slate-400 mb-4">Recommended personal weekly emission allowance benchmark.</p>
+            <p className="text-xs text-[#557560] mb-4">Recommended personal weekly emission allowance benchmark.</p>
 
-            {/* Animated Progress Bar */}
-            <div className="w-full bg-slate-950 rounded-full h-3 p-0.5 border border-slate-800 overflow-hidden">
+            {/* Progress Bar */}
+            <div className="w-full bg-[#EAF2E9] rounded-full h-3 p-0.5 border border-emerald-950/10 overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-700 ${
-                  budgetUsedPercent > 80 ? "bg-gradient-to-r from-amber-500 to-red-500" : "bg-gradient-to-r from-emerald-500 to-teal-400"
+                  budgetUsedPercent > 80 ? "bg-[#C96A2B]" : "bg-[#0F2D1E]"
                 }`}
                 style={{ width: `${budgetUsedPercent}%` }}
               ></div>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
-            <span className="text-slate-400">Budget Status</span>
-            <span className={`font-bold ${budgetUsedPercent > 80 ? "text-amber-400" : "text-emerald-400"}`}>
+          <div className="mt-4 pt-3 border-t border-emerald-950/10 flex items-center justify-between text-xs">
+            <span className="text-[#557560]">Budget Status</span>
+            <span className={`font-bold ${budgetUsedPercent > 80 ? "text-[#C96A2B]" : "text-[#0F2D1E]"}`}>
               {budgetUsedPercent}% Used ({weeklyBudget - stats.totalCO2 > 0 ? (weeklyBudget - stats.totalCO2).toFixed(1) : 0} kg left)
             </span>
           </div>
@@ -134,38 +134,38 @@ const EcoInsights = ({ activities }) => {
       </div>
 
       {/* Unlocked Badges Section */}
-      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl p-6">
+      <div className="eco-card p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="text-lg">🎖️</span>
-            <h3 className="text-base font-bold text-white tracking-tight">Eco Badges & Achievements</h3>
+            <h3 className="font-serif text-lg font-bold text-[#0F2D1E] tracking-tight">Eco Badges & Achievements</h3>
           </div>
-          <span className="text-xs text-slate-400">4 Unlocked</span>
+          <span className="text-xs text-[#557560]">4 Unlocked</span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="rounded-2xl bg-slate-950/80 border border-emerald-500/30 p-3 text-center flex flex-col items-center">
+          <div className="rounded-2xl bg-[#EAF2E9] border border-emerald-900/15 p-3 text-center flex flex-col items-center">
             <span className="text-2xl mb-1">🌱</span>
-            <p className="text-xs font-bold text-white">First Log</p>
-            <p className="text-[10px] text-emerald-400">Unlocked</p>
+            <p className="text-xs font-bold text-[#0F2D1E]">First Log</p>
+            <p className="text-[10px] text-[#2D5A39] font-bold">Unlocked</p>
           </div>
 
-          <div className="rounded-2xl bg-slate-950/80 border border-teal-500/30 p-3 text-center flex flex-col items-center">
+          <div className="rounded-2xl bg-[#EAF2E9] border border-emerald-900/15 p-3 text-center flex flex-col items-center">
             <span className="text-2xl mb-1">🚗</span>
-            <p className="text-xs font-bold text-white">Smart Commuter</p>
-            <p className="text-[10px] text-teal-400">Unlocked</p>
+            <p className="text-xs font-bold text-[#0F2D1E]">Smart Commuter</p>
+            <p className="text-[10px] text-[#2D5A39] font-bold">Unlocked</p>
           </div>
 
-          <div className="rounded-2xl bg-slate-950/80 border border-cyan-500/30 p-3 text-center flex flex-col items-center">
+          <div className="rounded-2xl bg-[#EAF2E9] border border-emerald-900/15 p-3 text-center flex flex-col items-center">
             <span className="text-2xl mb-1">⚡</span>
-            <p className="text-xs font-bold text-white">Power Saver</p>
-            <p className="text-[10px] text-cyan-400">Unlocked</p>
+            <p className="text-xs font-bold text-[#0F2D1E]">Power Saver</p>
+            <p className="text-[10px] text-[#2D5A39] font-bold">Unlocked</p>
           </div>
 
-          <div className="rounded-2xl bg-slate-950/80 border border-amber-500/30 p-3 text-center flex flex-col items-center">
+          <div className="rounded-2xl bg-[#EAF2E9] border border-emerald-900/15 p-3 text-center flex flex-col items-center">
             <span className="text-2xl mb-1">🏆</span>
-            <p className="text-xs font-bold text-white">Leaderboard Contender</p>
-            <p className="text-[10px] text-amber-400">Active</p>
+            <p className="text-xs font-bold text-[#0F2D1E]">Contender</p>
+            <p className="text-[10px] text-[#C96A2B] font-bold">Active</p>
           </div>
         </div>
       </div>
