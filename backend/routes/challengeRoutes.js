@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createChallenge,
   getChallenges,
+  getMyChallenges,
   getChallengeById,
   joinChallenge,
   updateProgress,
@@ -12,6 +13,7 @@ const { protect, authorize } = require("../middleware/authMiddleware");
 
 // Specific routes before dynamic :id routes
 router.get("/leaderboard", protect, getLeaderboard);
+router.get("/my-challenges", protect, getMyChallenges);
 
 router.route("/")
   .post(protect, authorize("admin"), createChallenge)

@@ -39,9 +39,41 @@ const getChallenges = async (req, res) => {
   try {
     const challenges = await Challenge.find({ isActive: true }).sort({ startDate: -1 });
 
-    res.status(200).json(challenges);
+    const userParticipations = await ChallengeParticipant.find({ user: req.user._id }).select("challenge progressValue isCompleted");
+    const joinedMap = {};
+    userParticipations.forEach((p) => {
+      joinedMap[p.challenge.toString()] = {
+        progressValue: p.progressValue,
+        isCompleted: p.isCompleted,
+      };
+    });
+
+    const challengesWithJoinedState = challenges.map((c) => {
+      const cObj = c.toObject();
+      cObj.isJoined = Boolean(joinedMap[c._id.toString()]);
+      cObj.myProgress = joinedMap[c._id.toString()] || null;
+      return cObj;
+    });
+
+    res.status(200).json(challengesWithJoinedState);
   } catch (error) {
     console.error("GET CHALLENGES ERROR:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get user's joined challenges
+// @route   GET /api/challenges/my-challenges
+// @access  Private
+const getMyChallenges = async (req, res) => {
+  try {
+    const participations = await ChallengeParticipant.find({ user: req.user._id })
+      .populate("challenge")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(participations);
+  } catch (error) {
+    console.error("GET MY CHALLENGES ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -204,6 +236,7 @@ const getLeaderboard = async (req, res) => {
 module.exports = {
   createChallenge,
   getChallenges,
+  getMyChallenges,
   getChallengeById,
   joinChallenge,
   updateProgress,

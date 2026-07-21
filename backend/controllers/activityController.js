@@ -6,13 +6,13 @@ const { calculateCO2 } = require("../utils/emissionFactors");
 // @access  Private
 const createActivity = async (req, res) => {
   try {
-    const { category, subType, quantity, unit, date, notes } = req.body;
+    const { category, subType, quantity, unit, date, notes, metadata } = req.body;
 
     if (!category || !subType || quantity === undefined || !unit) {
       return res.status(400).json({ message: "category, subType, quantity, and unit are required" });
     }
 
-    const co2Emitted = calculateCO2(category, subType, quantity);
+    const co2Emitted = calculateCO2(category, subType, quantity, metadata);
     const activity = await Activity.create({
       user: req.user._id,
       category,
@@ -21,6 +21,7 @@ const createActivity = async (req, res) => {
       unit,
       date: date || Date.now(),
       notes,
+      metadata: metadata || {},
       co2Emitted,
     });
 
@@ -107,7 +108,7 @@ const updateActivity = async (req, res) => {
       return res.status(403).json({ message: "Not authorized to update this activity" });
     }
 
-    const { category, subType, quantity, unit, date, notes } = req.body;
+    const { category, subType, quantity, unit, date, notes, metadata } = req.body;
 
     activity.category = category ?? activity.category;
     activity.subType = subType ?? activity.subType;
@@ -115,9 +116,12 @@ const updateActivity = async (req, res) => {
     activity.unit = unit ?? activity.unit;
     activity.date = date ?? activity.date;
     activity.notes = notes ?? activity.notes;
+    if (metadata !== undefined) {
+      activity.metadata = metadata;
+    }
 
     // Reset co2Emitted since values changed — will be recalculated
-    activity.co2Emitted = calculateCO2(activity.category, activity.subType, activity.quantity);
+    activity.co2Emitted = calculateCO2(activity.category, activity.subType, activity.quantity, activity.metadata);
 
     await activity.save();
 

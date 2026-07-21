@@ -41,6 +41,10 @@ const activitySchema = new mongoose.Schema(
       trim: true,
       maxlength: 300,
     },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
     // Filled in later by the Footprint Calculation Engine (Module 3)
     co2Emitted: {
       type: Number,

@@ -1,6 +1,13 @@
 import { useState } from "react";
 import api from "../utils/api";
-import { CATEGORIES, SUBTYPES, UNITS } from "../utils/constants";
+import {
+  CATEGORIES,
+  SUBTYPES,
+  UNITS,
+  CAR_FUEL_TYPES,
+  CAR_SIZES,
+  CAR_AGES,
+} from "../utils/constants";
 
 const ActivityForm = ({ onActivityAdded }) => {
   const [form, setForm] = useState({
@@ -10,17 +17,53 @@ const ActivityForm = ({ onActivityAdded }) => {
     unit: "km",
     date: new Date().toISOString().split("T")[0],
     notes: "",
+    metadata: {
+      fuelType: "petrol",
+      carSize: "medium",
+      carAge: "mid",
+    },
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleCategoryChange = (e) => {
     const category = e.target.value;
-    setForm({ ...form, category, subType: SUBTYPES[category][0] });
+    const defaultSubType = SUBTYPES[category][0];
+    setForm({
+      ...form,
+      category,
+      subType: defaultSubType,
+      metadata:
+        category === "transport" && defaultSubType === "car"
+          ? { fuelType: "petrol", carSize: "medium", carAge: "mid" }
+          : {},
+    });
+  };
+
+  const handleSubTypeChange = (e) => {
+    const subType = e.target.value;
+    setForm({
+      ...form,
+      subType,
+      metadata:
+        form.category === "transport" && subType === "car"
+          ? { fuelType: "petrol", carSize: "medium", carAge: "mid" }
+          : {},
+    });
   };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleMetadataChange = (e) => {
+    setForm({
+      ...form,
+      metadata: {
+        ...form.metadata,
+        [e.target.name]: e.target.value,
+      },
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -44,6 +87,8 @@ const ActivityForm = ({ onActivityAdded }) => {
     }
   };
 
+  const isCarTransport = form.category === "transport" && form.subType === "car";
+
   return (
     <div className="bg-white/95 border border-sage/10 rounded-[1.75rem] shadow-lg p-6">
       <h2 className="text-lg font-semibold mb-4 text-pine">Log New Activity</h2>
@@ -59,7 +104,7 @@ const ActivityForm = ({ onActivityAdded }) => {
             name="category"
             value={form.category}
             onChange={handleCategoryChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40"
+            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
           >
             {CATEGORIES.map((c) => (
               <option key={c.value} value={c.value}>{c.label}</option>
@@ -72,14 +117,61 @@ const ActivityForm = ({ onActivityAdded }) => {
           <select
             name="subType"
             value={form.subType}
-            onChange={handleChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40"
+            onChange={handleSubTypeChange}
+            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
           >
             {SUBTYPES[form.category].map((s) => (
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
         </div>
+
+        {/* Dynamic Car Smart Factors */}
+        {isCarTransport && (
+          <div className="md:col-span-2 bg-emerald-50/60 border border-emerald-100 p-4 rounded-2xl grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-emerald-800 mb-1">Fuel Type</label>
+              <select
+                name="fuelType"
+                value={form.metadata?.fuelType || "petrol"}
+                onChange={handleMetadataChange}
+                className="w-full rounded-2xl border border-emerald-200 bg-white px-3 py-2 text-xs text-pine outline-none focus:ring-2 focus:ring-emerald-400"
+              >
+                {CAR_FUEL_TYPES.map((f) => (
+                  <option key={f.value} value={f.value}>{f.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-emerald-800 mb-1">Vehicle Size</label>
+              <select
+                name="carSize"
+                value={form.metadata?.carSize || "medium"}
+                onChange={handleMetadataChange}
+                className="w-full rounded-2xl border border-emerald-200 bg-white px-3 py-2 text-xs text-pine outline-none focus:ring-2 focus:ring-emerald-400"
+              >
+                {CAR_SIZES.map((s) => (
+                  <option key={s.value} value={s.value}>{s.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-emerald-800 mb-1">Vehicle Age</label>
+              <select
+                name="carAge"
+                value={form.metadata?.carAge || "mid"}
+                onChange={handleMetadataChange}
+                className="w-full rounded-2xl border border-emerald-200 bg-white px-3 py-2 text-xs text-pine outline-none focus:ring-2 focus:ring-emerald-400"
+              >
+                {CAR_AGES.map((a) => (
+                  <option key={a.value} value={a.value}>{a.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-sage mb-1">Quantity</label>
@@ -90,7 +182,7 @@ const ActivityForm = ({ onActivityAdded }) => {
             min="0"
             value={form.quantity}
             onChange={handleChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40"
+            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
             placeholder="e.g. 15"
           />
         </div>
@@ -101,7 +193,7 @@ const ActivityForm = ({ onActivityAdded }) => {
             name="unit"
             value={form.unit}
             onChange={handleChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40"
+            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
           >
             {UNITS.map((u) => (
               <option key={u} value={u}>{u}</option>
@@ -116,7 +208,7 @@ const ActivityForm = ({ onActivityAdded }) => {
             name="date"
             value={form.date}
             onChange={handleChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40"
+            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
           />
         </div>
 
@@ -127,7 +219,7 @@ const ActivityForm = ({ onActivityAdded }) => {
             name="notes"
             value={form.notes}
             onChange={handleChange}
-            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40"
+            className="w-full rounded-3xl border border-sage/20 bg-mist/60 px-4 py-3 text-pine outline-none transition focus:border-moss focus:ring-2 focus:ring-mosslight/40 text-sm"
             placeholder="Optional notes"
           />
         </div>
