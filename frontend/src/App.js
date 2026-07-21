@@ -22,39 +22,40 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/challenges" element={<ProtectedRoute><Challenges /></ProtectedRoute>} />
-          <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
-          <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
-          <Route path="/marketplace/:id" element={<ProtectedRoute><ListingDetail /></ProtectedRoute>} />
-          <Route path="/my-orders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
-          <Route path="/apply-provider" element={<ProtectedRoute><ApplyProvider /></ProtectedRoute>} />
-          <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
-          <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-          <Route path="/team-challenges" element={<ProtectedRoute><TeamChallenges /></ProtectedRoute>} />
-          <Route path="/" element={<Landing />} />
-          <Route
-            path="/admin/verification"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <AdminVerification />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-  path="/admin"
-  element={
-    <ProtectedRoute allowedRoles={["admin"]}>
-      <AdminPanel />
-    </ProtectedRoute>
-  }
-/>
-          {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+        <div className="aurora-container min-h-screen">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/challenges" element={<ProtectedRoute><Challenges /></ProtectedRoute>} />
+            <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
+            <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
+            <Route path="/marketplace/:id" element={<ProtectedRoute><ListingDetail /></ProtectedRoute>} />
+            <Route path="/my-orders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
+            <Route path="/apply-provider" element={<ProtectedRoute><ApplyProvider /></ProtectedRoute>} />
+            <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
+            <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+            <Route path="/team-challenges" element={<ProtectedRoute><TeamChallenges /></ProtectedRoute>} />
+            <Route path="/" element={<Landing />} />
+            <Route
+              path="/admin/verification"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminVerification />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminPanel />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </div>
       </AuthProvider>
     </BrowserRouter>
   );
