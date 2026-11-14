@@ -186,7 +186,7 @@ const updateProgress = async (req, res) => {
 };
 
 const defaultLeaderboardData = [
-  { name: "Divakar Pandey", email: "divakarpandey07@gmail.com", role: "admin", organization: "CarbonTrack HQ (Super Admin)", points: 1250, completed: 12 },
+  { name: "Divakar Pandey", email: "pandeydivakar07@gmail.com", role: "admin", organization: "CarbonTrack HQ (Super Admin)", points: 1250, completed: 12 },
   { name: "Gungun", email: "gungun@gmail.com", role: "user", organization: "Lovely Professional University", points: 980, completed: 9 },
   { name: "Ayush", email: "ayush@gmail.com", role: "user", organization: "Lovely Professional University", points: 850, completed: 8 },
   { name: "Vanshul", email: "vanshul@gmail.com", role: "user", organization: "Lovely Professional University", points: 720, completed: 6 },
@@ -199,15 +199,17 @@ const ensureLeaderboardData = async () => {
   try {
     let challenge = await Challenge.findOne();
     if (!challenge) {
+      const adminUser = await User.findOne({ role: "admin" });
       challenge = await Challenge.create({
         title: "Campus & Regional Eco Quest",
         description: "Zero plastic & smart commute challenge",
         category: "transport",
-        targetType: "carbon_saved",
+        targetType: "reduce_co2",
         targetValue: 50,
         pointsReward: 100,
         startDate: new Date("2026-01-01"),
         endDate: new Date("2026-12-31"),
+        createdBy: adminUser?._id,
       });
     }
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import api from "../utils/api";
 import Navbar from "../components/Navbar";
+import FileUploadAnalysisModal from "../components/FileUploadAnalysisModal";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -26,6 +27,7 @@ const Analytics = () => {
   const [streaks, setStreaks] = useState(null);
   const [categoryTrends, setCategoryTrends] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -88,16 +90,28 @@ const Analytics = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Header Hero Banner */}
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-[#0D1829] via-[#0E1F36] to-[#0A1628] p-8 sm:p-12 border border-emerald-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
-          <div className="relative z-10">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 bg-emerald-500/15 border border-emerald-400/30 px-3.5 py-1.5 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-              Advanced Telemetry
-            </span>
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight mt-3 text-white">
-              Analytics & Net Impact 📊
-            </h1>
-            <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
-              Deep dive into category-wise monthly breakdowns, platform comparisons, net carbon neutrality score, and logging streaks.
-            </p>
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 bg-emerald-500/15 border border-emerald-400/30 px-3.5 py-1.5 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                Advanced Telemetry
+              </span>
+              <h1 className="text-3xl sm:text-5xl font-black tracking-tight mt-3 text-white">
+                Analytics & Net Impact 📊
+              </h1>
+              <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
+                Deep dive into category-wise monthly breakdowns, platform comparisons, net carbon neutrality score, and logging streaks.
+              </p>
+            </div>
+
+            <div>
+              <button
+                onClick={() => setShowUploadModal(true)}
+                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 text-slate-950 font-black text-xs hover:scale-105 transition shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 whitespace-nowrap"
+              >
+                <span>📁</span>
+                <span>Upload File for Analysis</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -204,6 +218,13 @@ const Analytics = () => {
           )}
         </div>
       </div>
+
+      {showUploadModal && (
+        <FileUploadAnalysisModal
+          isOpen={showUploadModal}
+          onClose={() => setShowUploadModal(false)}
+        />
+      )}
     </div>
   );
 };

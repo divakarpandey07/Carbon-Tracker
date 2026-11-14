@@ -12,10 +12,34 @@ const ApplyProvider = () => {
     registrationNumber: "",
     website: "",
     description: "",
+    documentUrl: "",
   });
+  const [docFile, setDocFile] = useState(null);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleDocumentUpload = async (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const selected = e.target.files[0];
+      setDocFile(selected);
+      setUploadingDoc(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", selected);
+        const { data } = await api.post("/upload/file", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        setForm((prev) => ({ ...prev, documentUrl: data.fileUrl }));
+      } catch (err) {
+        console.error("Doc upload error:", err);
+        setError("Failed to upload document file");
+      } finally {
+        setUploadingDoc(false);
+      }
+    }
+  };
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -125,9 +149,27 @@ const ApplyProvider = () => {
               />
             </div>
 
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                Upload Verification Document / NGO License (PDF, PNG, JPG)
+              </label>
+              <input
+                type="file"
+                accept=".pdf,.png,.jpg,.jpeg,.docx"
+                onChange={handleDocumentUpload}
+                className="w-full rounded-2xl border border-slate-700/80 bg-slate-950 px-4 py-2.5 text-xs text-slate-300 outline-none file:mr-3 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-500/20 file:text-emerald-300 hover:file:bg-emerald-500/30 cursor-pointer"
+              />
+              {uploadingDoc && <p className="text-[11px] text-teal-400 mt-1">Uploading document...</p>}
+              {form.documentUrl && (
+                <p className="text-[11px] text-emerald-400 mt-1 font-semibold">
+                  ✓ Document attached: {docFile?.name || form.documentUrl}
+                </p>
+              )}
+            </div>
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || uploadingDoc}
               className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 py-3 text-xs font-black text-slate-950 shadow-lg shadow-emerald-500/25 hover:scale-[1.02] transition disabled:opacity-50"
             >
               {loading ? "Submitting Application..." : "Submit Verification Request"}

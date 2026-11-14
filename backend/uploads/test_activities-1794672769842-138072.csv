@@ -1,0 +1,3 @@
+category,subType,quantity,unit,date,notes
+transport,car,40,km,2026-11-14,Test commute
+electricity,grid,100,kWh,2026-11-14,Test power

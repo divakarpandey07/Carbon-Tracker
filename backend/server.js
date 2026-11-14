@@ -32,6 +32,10 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Carbon Tracker API running" });
 });
 
+const path = require("path");
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/activities", require("./routes/activityRoutes"));
 app.use("/api/footprint", require("./routes/footprintRoutes"));
@@ -43,6 +47,7 @@ app.use("/api/feed", require("./routes/feedRoutes"));
 app.use("/api/analytics", require("./routes/analyticsRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/team-challenges", require("./routes/teamChallengeRoutes"));
+app.use("/api/upload", require("./routes/uploadRoutes"));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

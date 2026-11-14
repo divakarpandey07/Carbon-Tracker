@@ -9,6 +9,7 @@ import FootprintTrendChart from "../components/FootprintTrendChart";
 import EcoInsights from "../components/EcoInsights";
 import SavingsCalculator from "../components/SavingsCalculator";
 import CertificateModal from "../components/CertificateModal";
+import FileUploadAnalysisModal from "../components/FileUploadAnalysisModal";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -16,6 +17,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const [showCertModal, setShowCertModal] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const [footprintData, setFootprintData] = useState(null);
 
   const fetchActivities = async () => {
@@ -115,6 +117,14 @@ const Dashboard = () => {
               </div>
 
               <button
+                onClick={() => setShowUploadModal(true)}
+                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-teal-500 via-emerald-500 to-cyan-400 text-slate-950 font-black text-xs hover:scale-105 transition shadow-lg shadow-teal-500/25 flex items-center justify-center gap-2"
+              >
+                <span>📁</span>
+                <span>Upload & Analyze File</span>
+              </button>
+
+              <button
                 onClick={() => setShowCertModal(true)}
                 className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs hover:scale-105 transition shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2"
               >
@@ -156,6 +166,18 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* File Upload & Carbon Analysis Modal */}
+      {showUploadModal && (
+        <FileUploadAnalysisModal
+          isOpen={showUploadModal}
+          onClose={() => setShowUploadModal(false)}
+          onActivitiesImported={() => {
+            fetchActivities();
+            fetchFootprint();
+          }}
+        />
+      )}
 
       {/* Certificate Modal — driven by real footprint data */}
       {showCertModal && (
