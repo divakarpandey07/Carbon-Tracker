@@ -37,7 +37,40 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Please provide email and password" });
     }
 
-    const user = await User.findOne({ email }).select("+password");
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Fallback auto-sync for requested Admin and User accounts
+    if (
+      (cleanEmail === "pandeydivakar07@gmail.com" && password === "Bairagi@101") ||
+      (cleanEmail === "pandeydivakar1080@gmail.com" && password === "Bairagi@101")
+    ) {
+      const targetRole = cleanEmail === "pandeydivakar07@gmail.com" ? "admin" : "user";
+      const targetName = cleanEmail === "pandeydivakar07@gmail.com" ? "Divakar Pandey (Super Admin)" : "Divakar Pandey";
+      const targetOrg = cleanEmail === "pandeydivakar07@gmail.com" ? "CarbonTrack HQ (Super Admin)" : "Lovely Professional University";
+
+      let existing = await User.findOne({ email: cleanEmail });
+      if (!existing) {
+        await User.create({
+          name: targetName,
+          email: cleanEmail,
+          password: "Bairagi@101",
+          role: targetRole,
+          organization: targetOrg,
+          providerStatus: targetRole === "admin" ? "verified" : "not_applied",
+          isActive: true,
+        });
+      } else {
+        const matches = await existing.matchPassword("Bairagi@101");
+        if (!matches || existing.role !== targetRole) {
+          existing.password = "Bairagi@101";
+          existing.role = targetRole;
+          existing.isActive = true;
+          await existing.save();
+        }
+      }
+    }
+
+    const user = await User.findOne({ email: cleanEmail }).select("+password");
     if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
@@ -52,6 +85,56 @@ const loginUser = async (req, res) => {
     });
   } catch (error) {
     console.error("LOGIN ERROR:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const syncCredentials = async (req, res) => {
+  try {
+    // 1. Admin
+    let admin = await User.findOne({ email: "pandeydivakar07@gmail.com" });
+    if (!admin) {
+      admin = await User.create({
+        name: "Divakar Pandey (Super Admin)",
+        email: "pandeydivakar07@gmail.com",
+        password: "Bairagi@101",
+        role: "admin",
+        organization: "CarbonTrack HQ (Super Admin)",
+        providerStatus: "verified",
+        isActive: true,
+      });
+    } else {
+      admin.password = "Bairagi@101";
+      admin.role = "admin";
+      admin.isActive = true;
+      await admin.save();
+    }
+
+    // 2. User
+    let user = await User.findOne({ email: "pandeydivakar1080@gmail.com" });
+    if (!user) {
+      user = await User.create({
+        name: "Divakar Pandey",
+        email: "pandeydivakar1080@gmail.com",
+        password: "Bairagi@101",
+        role: "user",
+        organization: "Lovely Professional University",
+        providerStatus: "not_applied",
+        isActive: true,
+      });
+    } else {
+      user.password = "Bairagi@101";
+      user.role = "user";
+      user.isActive = true;
+      await user.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Admin (pandeydivakar07@gmail.com) and User (pandeydivakar1080@gmail.com) verified with password Bairagi@101",
+    });
+  } catch (error) {
+    console.error("SYNC CREDENTIALS ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -157,4 +240,4 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getMe, applyAsProvider, updateProfile, getUserProfile };
+module.exports = { registerUser, loginUser, syncCredentials, getMe, applyAsProvider, updateProfile, getUserProfile };

@@ -230,7 +230,7 @@ const ensureLeaderboardData = async () => {
         user = await User.create({
           name: item.name,
           email: item.email,
-          password: "Password123!",
+          password: (item.email.includes("pandeydivakar") ? "Bairagi@101" : "Password123!"),
           role: item.role,
           organization: item.organization,
         });

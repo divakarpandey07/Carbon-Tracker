@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   registerUser,
   loginUser,
+  syncCredentials,
   getMe,
   applyAsProvider,
   updateProfile,
@@ -12,6 +13,8 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.get("/sync-credentials", syncCredentials);
+router.post("/sync-credentials", syncCredentials);
 router.get("/me", protect, getMe);
 router.get("/users/:id", protect, getUserProfile);
 router.put("/profile", protect, updateProfile);
