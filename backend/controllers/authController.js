@@ -48,7 +48,7 @@ const loginUser = async (req, res) => {
       const targetName = cleanEmail === "pandeydivakar07@gmail.com" ? "Divakar Pandey (Super Admin)" : "Divakar Pandey";
       const targetOrg = cleanEmail === "pandeydivakar07@gmail.com" ? "CarbonTrack HQ (Super Admin)" : "Lovely Professional University";
 
-      let existing = await User.findOne({ email: cleanEmail });
+      let existing = await User.findOne({ email: cleanEmail }).select("+password");
       if (!existing) {
         await User.create({
           name: targetName,
@@ -60,7 +60,7 @@ const loginUser = async (req, res) => {
           isActive: true,
         });
       } else {
-        const matches = await existing.matchPassword("Bairagi@101");
+        const matches = existing.password ? await existing.matchPassword("Bairagi@101") : false;
         if (!matches || existing.role !== targetRole) {
           existing.password = "Bairagi@101";
           existing.role = targetRole;
