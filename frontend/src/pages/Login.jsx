@@ -17,6 +17,7 @@ const Login = () => {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    if (error) setError("");
   };
 
   const handleSubmit = async (e) => {
@@ -24,7 +25,11 @@ const Login = () => {
     setError("");
     setLoading(true);
     try {
-      const data = await login(form);
+      const payload = {
+        email: form.email.trim(),
+        password: form.password,
+      };
+      const data = await login(payload);
 
       // Verify role if logging in through Administrator tab
       if (loginRole === "admin" && data.role !== "admin") {
@@ -39,7 +44,15 @@ const Login = () => {
         navigate("/dashboard");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid credentials. Please verify your email and password.");
+      if (err.response?.status === 401) {
+        setError("Invalid email or password. Please verify your credentials.");
+      } else if (err.response?.status === 404) {
+        setError("Backend service endpoint not reachable. Please wait 10 seconds and try again.");
+      } else if (err.code === "ERR_NETWORK") {
+        setError("Network error: Cannot reach the backend server. Please check internet connection.");
+      } else {
+        setError(err.response?.data?.message || "Login failed. Please check your credentials.");
+      }
     } finally {
       setLoading(false);
     }

@@ -1,38 +1,37 @@
 import axios from "axios";
 
-const fallbackBaseURL = "http://localhost:5000/api";
+export const LIVE_BACKEND_URL = "https://carbontracker-jr2i.onrender.com/api";
 
-const normalizeBaseURL = (value) => {
-  if (typeof value !== "string") return fallbackBaseURL;
+export const getApiBaseURL = () => {
+  let envVal = (process.env.REACT_APP_API_URL || "").trim();
 
-  const trimmed = value.trim();
-  if (!trimmed) return fallbackBaseURL;
-  if (/^https?:\/\//i.test(trimmed)) return trimmed.replace(/\/+$/, "");
-  if (trimmed.startsWith("/")) return `http://localhost:5000${trimmed.replace(/\/+$/, "")}`;
+  // If env points to the broken / non-existent carbontracker-backend, redirect to carbontracker-jr2i
+  if (envVal.includes("carbontracker-backend") || envVal.includes("carbon-tracker-1219")) {
+    return LIVE_BACKEND_URL;
+  }
 
-  return `http://${trimmed.replace(/^\/+/, "").replace(/\/+$/, "")}`;
+  // If running in browser and NOT localhost (e.g. on Vercel), always use production backend unless a valid custom URL is given
+  if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
+    if (!envVal || envVal.includes("localhost") || !/^https?:\/\//i.test(envVal)) {
+      return LIVE_BACKEND_URL;
+    }
+  }
+
+  if (envVal && /^https?:\/\//i.test(envVal)) {
+    return envVal.replace(/\/+$/, "");
+  }
+
+  return LIVE_BACKEND_URL;
 };
 
-const buildAbsoluteURL = (baseURLValue, urlValue) => {
-  if (typeof urlValue !== "string") return baseURLValue;
-
-  const trimmedUrl = urlValue.trim();
-  if (!trimmedUrl) return baseURLValue;
-  if (/^https?:\/\//i.test(trimmedUrl)) return trimmedUrl;
-
-  const normalizedBase = normalizeBaseURL(baseURLValue);
-  const normalizedPath = trimmedUrl.replace(/^\/+/, "");
-  return `${normalizedBase}/${normalizedPath}`;
-};
-
-const baseURL = normalizeBaseURL(process.env.REACT_APP_API_URL || fallbackBaseURL);
+const baseURL = getApiBaseURL();
 
 const api = axios.create({
   baseURL,
-  timeout: 10000,
+  timeout: 20000,
 });
 
-// Attach token automatically to every request
+// Attach token automatically to every request and normalize URLs
 api.interceptors.request.use((config) => {
   try {
     const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -43,10 +42,17 @@ api.interceptors.request.use((config) => {
     console.warn("Could not read auth user from storage", error);
   }
 
-  config.baseURL = normalizeBaseURL(config.baseURL || baseURL);
+  const activeBase = getApiBaseURL();
+  config.baseURL = activeBase;
 
   if (config.url) {
-    config.url = buildAbsoluteURL(config.baseURL, config.url);
+    // Correct broken backend hosts dynamically
+    if (config.url.includes("carbontracker-backend.onrender.com")) {
+      config.url = config.url.replace("https://carbontracker-backend.onrender.com/api", activeBase);
+    } else if (!/^https?:\/\//i.test(config.url)) {
+      const cleanPath = config.url.replace(/^\/+/, "");
+      config.url = `${activeBase}/${cleanPath}`;
+    }
   }
 
   return config;
@@ -55,9 +61,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error?.message === "Invalid URL") {
-      console.error("Invalid URL request detected", error.config?.url, error.config?.baseURL);
-    }
+    console.error("API Request Error:", {
+      url: error.config?.url,
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message,
+    });
     return Promise.reject(error);
   }
 );
